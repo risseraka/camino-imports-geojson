@@ -1,0 +1,39 @@
+{
+  "name": "camino-tools",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-stockage":
+      "node ./index-stockage.js && npx jsonlint exports/titres-stockage.json > exports/titres-stockage-format.json",
+    "watch-stockage":
+      "onchange -i ./index-stockage.js -- npm run build-stockage",
+    "build-hydrocarbures":
+      "node ./index-hydrocarbures.js && npx jsonlint exports/titres-hydrocarbures.json > exports/titres-hydrocarbures-format.json",
+    "watch-hydrocarbures":
+      "onchange -i ./index-hydrocarbures.js -- npm run build-hydrocarbures",
+    "build-mineraux":
+      "node ./index-mineraux.js && npx jsonlint exports/titres-mineraux.json > exports/titres-mineraux-format.json",
+    "watch-mineraux":
+      "onchange -i ./index-mineraux.js -- npm run build-mineraux",
+    "build-geothermie":
+      "node ./index-geothermie.js && npx jsonlint exports/titres-geothermie.json > exports/titres-geothermie-format.json",
+    "watch-geothermie":
+      "onchange -i ./index-geothermie.js -- npm run build-geothermie"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@turf/explode": "^5.1.5",
+    "@turf/helpers": "^6.1.1",
+    "lodash": "^4.17.5",
+    "splice-string": "^2.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "jsonlint": "^1.6.3",
+    "nomnom": "^1.8.1",
+    "onchange": "^3.3.0"
+  }
+}
