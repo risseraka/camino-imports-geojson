@@ -1,21 +1,7 @@
-const fs = require('fs')
 const _ = require('lodash')
-const explode = require('@turf/explode')
 const spliceString = require('splice-string')
-const geojson = require('./sources/stockages.json')
 
-const fileCreate = jsonObj => {
-  let json = JSON.stringify(jsonObj)
-  fs.writeFile('exports/titres.json', json, 'utf8', err => {
-    if (err) {
-      console.log('fileCreate error', err)
-    } else {
-      console.log('File saved')
-    }
-  })
-}
-
-const newFile = geoJson => {
+module.exports = geoJson => {
   const newGeoJson = geoJson.features.map(f => ({
     id: f.properties.NUMERO,
     nom: _.startCase(_.toLower(f.properties.NOM)),
@@ -48,7 +34,7 @@ const newFile = geoJson => {
                   coordinates: set
                 },
                 properties: {
-                  type: `contour-${i}`
+                  groupe: `contour-${i}`
                 }
               })
               return r
@@ -69,5 +55,3 @@ const newFile = geoJson => {
   }))
   return newGeoJson
 }
-
-fileCreate(newFile(geojson))

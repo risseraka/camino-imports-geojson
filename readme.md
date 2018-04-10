@@ -14,8 +14,8 @@ Outil pour convertir les bases de donnée des titres miniers (geojson) en fichie
 npm i
 
 # export des fichiers
-npm run build-geothermie
-npm run build-hydrocarbures
-npm run build-mineraux
-npm run build-stockage
+npm run build-g
+npm run build-h
+npm run build-m
+npm run build-s
 ```
