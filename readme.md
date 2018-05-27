@@ -3,19 +3,25 @@
 Outil pour convertir les bases de donnée des titres miniers (geojson) en fichiers compatibles avec Camino-front (json).
 
 * Les fichiers sources doivent être placés dans le dossier `/sources` et respecter les noms suivants:
-* * `titres-geothermie.json`
-* * `titres-hydrocarbures.json`
-* * `titres-mineraux.json`
-* * `titres-stockage.json`
+* * `geothermie.json`
+* * `hydrocarbures.json`
+* * `mineraux.json`
+* * `stockage.json`
 * Les fichiers transformés sont accessibles dans le dossier `/exports`.
 
 ```bash
 # installation
 npm i
 
-# export des fichiers
-npm run build-g
-npm run build-h
-npm run build-m
-npm run build-s
+# export des fichiers avec node
+node /front.js geothermie
+node /front.js hydrocarbures
+node /front.js mineraux
+node /front.js stockage
+
+# export des fichiers avec npm
+npm run front-g
+npm run front-h
+npm run front-m
+npm run front-s
 ```

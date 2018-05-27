@@ -1,5 +1,6 @@
 .DS_Store
 node_modules
-/exports/*
-/sources/*
+/_exports/front/*
+/_exports/back/*
+/_sources/*
 .env

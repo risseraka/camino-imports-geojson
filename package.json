@@ -4,33 +4,35 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build-s":
-      "node ./_stockage/index.js && npx jsonlint exports/titres-stockage.json > exports/titres-stockage-format.json",
-    "watch-s": "onchange -i ./_stockage/index.js -- npm run build-stockage",
-    "build-h":
-      "node ./_hydrocarbures/index.js && npx jsonlint exports/titres-hydrocarbures.json > exports/titres-hydrocarbures-format.json",
-    "watch-h":
-      "onchange -i ./_hydrocarbures/index.js -- npm run build-hydrocarbures",
-    "build-m":
-      "node ./_mineraux/index.js && npx jsonlint exports/titres-mineraux.json > exports/titres-mineraux-format.json",
-    "watch-m": "onchange -i ./_mineraux/index.js -- npm run build-mineraux",
-    "build-g":
-      "node ./_geothermie/index.js && npx jsonlint exports/titres-geothermie.json > exports/titres-geothermie-format.json",
-    "watch-g": "onchange -i ./_geothermie/index.js -- npm run build-geothermie"
+    "front-s": "node ./_front/stockage/index.js",
+    "front-s-w": "onchange '**/*.js' -i -- npm run front-s",
+    "front-h": "node ./_front/hydrocarbures/index.js",
+    "front-h-w": "onchange '**/*.js' -i -- npm run front-h",
+    "front-m": "node ./_front/mineraux/index.js",
+    "front-m-w": "onchange '**/*.js' -i -- npm run front-m",
+    "front-g": "node ./_front/geothermie/index.js",
+    "front-g-w": "onchange '**/*.js' -i -- npm run front-g",
+    "front":
+      "npm run front-s && npm run front-h && npm run front-m && npm run front-g"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@turf/explode": "^5.1.5",
-    "@turf/helpers": "^6.1.1",
-    "lodash": "^4.17.5",
+    "@turf/helpers": "^6.1.4",
+    "lodash": "^4.17.10",
     "splice-string": "^2.0.0"
   },
   "devDependencies": {
-    "eslint": "^4.19.1",
-    "jsonlint": "^1.6.3",
+    "eslint": "^5.0.0-alpha.3",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-config-standard": "^12.0.0-alpha.0",
+    "eslint-plugin-compat": "^2.3.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
     "nomnom": "^1.8.1",
-    "onchange": "^3.3.0"
+    "onchange": "^4.0.0"
   }
 }

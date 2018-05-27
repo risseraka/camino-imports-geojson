@@ -1,12 +1,9 @@
-const _ = require('lodash')
-const spliceString = require('splice-string')
-
-module.exports = geoJson => {
+module.exports = (geoJson, type) => {
   const coordinates = geoJson.features.map(f => f.geometry.coordinates)
   return {
     type: 'Feature',
     properties: {
-      type: 'mineraux'
+      type: type
     },
     geometry: {
       type: 'MultiPolygon',
