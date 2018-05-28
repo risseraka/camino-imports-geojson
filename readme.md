@@ -1,27 +1,27 @@
 # Camino outils geojson
 
-Outil pour convertir les bases de donnée des titres miniers (geojson) en fichiers compatibles avec Camino-front (json).
+Outil pour convertir les bases de donnée des titres miniers (geojson) en fichiers json prêts à importer dans la base de donnée de Camino.
 
-* Les fichiers sources doivent être placés dans le dossier `/sources` et respecter les noms suivants:
-* * `geothermie.json`
-* * `hydrocarbures.json`
-* * `mineraux.json`
-* * `stockage.json`
-* Les fichiers transformés sont accessibles dans le dossier `/exports`.
+* Les fichiers sources doivent être placés dans le dossier `/_sources` et respecter les noms suivants:
+* * `g.json`
+* * `h.json`
+* * `m.json`
+* * `s.json`
+* Les fichiers transformés sont accessibles dans le dossier `/_exports`.
 
 ```bash
 # installation
 npm i
 
 # export des fichiers avec node
-node /front.js geothermie
-node /front.js hydrocarbures
-node /front.js mineraux
-node /front.js stockage
+node /back.js g
+node /back.js h
+node /back.js m
+node /back.js s
 
 # export des fichiers avec npm
-npm run front-g
-npm run front-h
-npm run front-m
-npm run front-s
+npm run back-g
+npm run back-h
+npm run back-m
+npm run back-s
 ```
