@@ -55,6 +55,12 @@ const transform = f => {
     }
   })()
 
+  let phaseDate = _.replace(f.properties.DATE_JO_RF, /\//g, '-')
+
+  if (phaseDate === '') {
+    phaseDate = '1900-01-01'
+  }
+
   return {
     titres: {
       id: titreId,
@@ -75,24 +81,51 @@ const transform = f => {
       id: titrePhaseId,
       phaseId,
       titreId,
-      date: _.replace(f.properties.DATE_JO_RF, /\//g, '-'),
+      date: phaseDate,
       duree:
         (f.properties.DATE2
           ? Number(spliceString(f.properties.DATE2, 4, 6))
           : Number(spliceString(f.properties.DATE1, 4, 6))) -
-        Number(spliceString(f.properties.DATE_JO_RF, 4, 6)),
+        Number(spliceString(phaseDate, 4, 6)),
       surface: f.properties.SUPERFICIE,
       position: phasePosition
     },
     'titres-phases-emprises': {
       titrePhaseId,
       empriseId: 'ter'
-    }
+    },
+    'titres-geo-points': f.geometry.coordinates.reduce(
+      (res, shape, i) =>
+        res.concat(
+          shape.reduce((r, set, n) => {
+            r.push({
+              id: slugify(`${titrePhaseId}-contour-${i}-${n}`),
+              coordonees: set.join(),
+              groupe: `contour-${i}`,
+              titrePhaseId,
+              position: n,
+              nom: String(n)
+            })
+            return r
+          }, [])
+        ),
+      []
+    )
   }
 }
 
-const jsonCreate = (tmpJson, type, table) => {
+const objectCreate = (tmpJson, type, table) => {
   const json = tmpJson.map(n => n[table])
+  const fileContent = JSON.stringify(json, null, 2)
+  const fileName = `_exports/back/${type}-${table}.json`
+
+  fileCreate(fileName, fileContent)
+}
+
+const arrayCreate = (tmpJson, type, table) => {
+  let json = tmpJson
+    .map(n => n[table])
+    .reduce((r, current) => r.concat(current), [])
   const fileContent = JSON.stringify(json, null, 2)
   const fileName = `_exports/back/${type}-${table}.json`
 
@@ -101,8 +134,9 @@ const jsonCreate = (tmpJson, type, table) => {
 
 module.exports = (sourceJson, type) => {
   const tmpJson = sourceJson.features.map(f => transform(f))
-  jsonCreate(tmpJson, type, 'titres')
-  jsonCreate(tmpJson, type, 'titres-substances-principales')
-  jsonCreate(tmpJson, type, 'titres-phases')
-  jsonCreate(tmpJson, type, 'titres-phases-emprises')
+  objectCreate(tmpJson, type, 'titres')
+  objectCreate(tmpJson, type, 'titres-substances-principales')
+  objectCreate(tmpJson, type, 'titres-phases')
+  objectCreate(tmpJson, type, 'titres-phases-emprises')
+  arrayCreate(tmpJson, type, 'titres-geo-points')
 }
