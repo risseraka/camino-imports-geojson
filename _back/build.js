@@ -14,7 +14,9 @@ const arrayCreate = (tmpJson, type, table) => {
     .reduce(
       (res, arr) => [
         ...res,
-        ...arr.filter(eNew => !res.find(e => eNew.id && eNew.id === e.id))
+        ...arr.filter(
+          eNew => eNew && !res.find(e => eNew.id && eNew.id === e.id)
+        )
       ],
       []
     )
@@ -32,7 +34,7 @@ const build = type => {
     jsonFormat(geojsonFeature)
   )
   objectCreate(tmpJson, type, 'titres')
-  objectCreate(tmpJson, type, 'titres-substances-principales')
+  arrayCreate(tmpJson, type, 'titres-substances-principales')
   objectCreate(tmpJson, type, 'titres-phases')
   objectCreate(tmpJson, type, 'titres-phases-emprises')
   arrayCreate(tmpJson, type, 'titres-geo-points')

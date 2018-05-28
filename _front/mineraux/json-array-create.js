@@ -2,31 +2,35 @@ const _ = require('lodash')
 const spliceString = require('splice-string')
 
 module.exports = geoJson => {
-  const newGeoJson = geoJson.features.map(f => ({
-    id: f.properties.CODE,
-    nom: _.startCase(_.toLower(f.properties.NOM_TITRE)),
-    type: _.capitalize(_.toLower(f.properties.NATURE)),
-    statut: f.properties.STATUT,
+  const newGeoJson = geoJson.features.map(geojsonFeature => ({
+    id: geojsonFeature.properties.CODE,
+    nom: _.startCase(_.toLower(geojsonFeature.properties.NOM_TITRE)),
+    type: _.capitalize(_.toLower(geojsonFeature.properties.NATURE)),
+    statut: geojsonFeature.properties.STATUT,
     substances: {
-      principales: _.replace(f.properties['SUBST_PRIN'], /,/g, '').split(' '),
-      connexes: [f.properties.SUBST_AUTR]
+      principales: _.replace(
+        geojsonFeature.properties['SUBST_PRIN'],
+        /,/g,
+        ''
+      ).split(' '),
+      connexes: [geojsonFeature.properties.SUBST_AUTR]
     },
     références: {
-      métier: f.properties.CODE
+      métier: geojsonFeature.properties.CODE
     },
     validité: {
-      début: _.replace(f.properties.DATE_DEB, /\//g, '-')
+      début: _.replace(geojsonFeature.properties.DATE_DEB, /\//g, '-')
         .split('-')
         .reverse()
         .join('-'),
       durée:
-        Number(spliceString(f.properties.DATE_FIN, 1, 6)) -
-        Number(spliceString(f.properties.DATE_DEB, 1, 6))
+        Number(spliceString(geojsonFeature.properties.DATE_FIN, 1, 6)) -
+        Number(spliceString(geojsonFeature.properties.DATE_DEB, 1, 6))
     },
-    surface: f.properties.AREA,
+    surface: geojsonFeature.properties.AREA,
     geojson: {
       type: 'FeatureCollection',
-      features: f.geometry.coordinates.reduce(
+      features: geojsonFeature.geometry.coordinates.reduce(
         (res, shape, i) =>
           res.concat(
             shape.reduce((r, set) => {
@@ -48,8 +52,8 @@ module.exports = geoJson => {
     },
     titulaires: [
       {
-        index: f.properties['EXPLOITANT'],
-        nom: f.properties['EXPLOITANT'],
+        index: geojsonFeature.properties['EXPLOITANT'],
+        nom: geojsonFeature.properties['EXPLOITANT'],
         siret: '',
         adresse: {},
         contact: {}

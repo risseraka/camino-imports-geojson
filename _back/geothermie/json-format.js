@@ -61,7 +61,7 @@ const jsonFormat = geojsonFeature => {
   const titulaires = ['1', '2', '3']
     .filter(id => geojsonFeature.properties[`TIT_PET${id}`])
     .map(i => ({
-      id: slugify(geojsonFeature.properties[`TIT_PET${i}`]),
+      id: slugify(geojsonFeature.properties[`TIT_PET${i}`].slice(0, 24)),
       nom: _.startCase(_.toLower(geojsonFeature.properties[`TIT_PET${i}`]))
     }))
 
@@ -77,10 +77,7 @@ const jsonFormat = geojsonFeature => {
         metier: geojsonFeature.properties.NUMERO
       }
     },
-    'titres-substances-principales': {
-      titreId,
-      substanceId: 'htmp'
-    },
+    'titres-substances-principales': [null],
     'titres-phases': {
       id: titrePhaseId,
       phaseId,
