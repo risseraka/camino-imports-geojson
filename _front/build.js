@@ -4,7 +4,7 @@ const fileCreate = require('../_file-create')
 const build = type => {
   console.log('Type:', type)
   const source = require(`../_sources/${type}.json`)
-  const jsonArrayCreate = require(`./${type}/json-array-create`)
+  const jsonArrayCreate = require(`./${type}/test`)
   const jsonObj = jsonArrayCreate(source, type)
   const fileContent = JSON.stringify(jsonObj, null, 2)
   const fileName = `_exports/front/${type}.json`
