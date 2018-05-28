@@ -8,7 +8,7 @@ module.exports = geoJson => {
     type: _.capitalize(_.toLower(f.properties.TYPE_FR)),
     statut: 'Valide',
     substances: {
-      principales: `Géomthermie ${_.toLower(f.properties.LEGENDE)}`
+      principales: `${_.toLower(f.properties.LEGENDE)}`
     },
     références: {
       métier: f.properties.NUMERO

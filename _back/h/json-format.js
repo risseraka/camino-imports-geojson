@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const slugify = require('@sindresorhus/slugify')
+const leftPad = require('left-pad')
 const spliceString = require('splice-string')
 const errMsg = '--------------------------------> ERROR'
 
@@ -89,11 +90,13 @@ const jsonFormat = geojsonFeature => {
       (points, set, n) => [
         ...points,
         {
-          id: slugify(`${titrePhaseId}-contour-${i}-${n}`),
+          id: slugify(
+            `${titrePhaseId}-contour-${leftPad(i, 2, 0)}-${leftPad(n, 3, 0)}`
+          ),
           coordonees: set.join(),
-          groupe: `contour-${i}`,
+          groupe: `contour-${leftPad(i, 2, 0)}`,
           titrePhaseId,
-          position: n,
+          position: leftPad(n, 3, 0),
           nom: String(n)
         }
       ],
@@ -109,7 +112,7 @@ const jsonFormat = geojsonFeature => {
       statutId: 'val',
       police: true,
       references: {
-        metier: geojsonFeature.properties.NUMERO
+        métier: geojsonFeature.properties.NUMERO
       }
     },
     'titres-substances-principales': [
