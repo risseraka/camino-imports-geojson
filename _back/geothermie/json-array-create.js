@@ -61,6 +61,13 @@ const transform = f => {
     phaseDate = '1900-01-01'
   }
 
+  const titulaires = ['1', '2', '3']
+    .filter(id => f.properties[`TIT_PET${id}`])
+    .map(i => ({
+      id: slugify(f.properties[`TIT_PET${i}`]),
+      nom: _.startCase(_.toLower(f.properties[`TIT_PET${i}`]))
+    }))
+
   return {
     titres: {
       id: titreId,
@@ -95,22 +102,27 @@ const transform = f => {
       empriseId: 'ter'
     },
     'titres-geo-points': f.geometry.coordinates.reduce(
-      (res, shape, i) =>
-        res.concat(
-          shape.reduce((r, set, n) => {
-            r.push({
+      (res, shape, i) => [
+        ...res,
+        ...shape.reduce(
+          (r, set, n) => [
+            ...r,
+            {
               id: slugify(`${titrePhaseId}-contour-${i}-${n}`),
               coordonees: set.join(),
               groupe: `contour-${i}`,
               titrePhaseId,
               position: n,
               nom: String(n)
-            })
-            return r
-          }, [])
-        ),
+            }
+          ],
+          []
+        )
+      ],
       []
-    )
+    ),
+    titulaires,
+    'titres-titulaires': titulaires.map(t => ({ titulaireId: t.id, titreId }))
   }
 }
 
@@ -125,7 +137,13 @@ const objectCreate = (tmpJson, type, table) => {
 const arrayCreate = (tmpJson, type, table) => {
   let json = tmpJson
     .map(n => n[table])
-    .reduce((r, current) => r.concat(current), [])
+    .reduce(
+      (res, arr) => [
+        ...res,
+        ...arr.filter(eNew => !res.find(e => eNew.id && eNew.id === e.id))
+      ],
+      []
+    )
   const fileContent = JSON.stringify(json, null, 2)
   const fileName = `_exports/back/${type}-${table}.json`
 
@@ -139,4 +157,6 @@ module.exports = (sourceJson, type) => {
   objectCreate(tmpJson, type, 'titres-phases')
   objectCreate(tmpJson, type, 'titres-phases-emprises')
   arrayCreate(tmpJson, type, 'titres-geo-points')
+  arrayCreate(tmpJson, type, 'titulaires')
+  arrayCreate(tmpJson, type, 'titres-titulaires')
 }
