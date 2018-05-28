@@ -4,6 +4,7 @@ const spliceString = require('splice-string')
 const errMsg = '--------------------------------> ERROR'
 
 const jsonFormat = geojsonFeature => {
+  const domaineId = 'h'
   const t = _.capitalize(_.toLower(geojsonFeature.properties.TYPE_FR))
   const typeId = (() => {
     if (
@@ -25,7 +26,7 @@ const jsonFormat = geojsonFeature => {
   })()
 
   const titreNom = _.startCase(_.toLower(geojsonFeature.properties.NOM))
-  const titreId = slugify(`${typeId}-${titreNom}`)
+  const titreId = slugify(`${domaineId}-${typeId}-${titreNom}`)
 
   const phaseId = (() => {
     if (t === 'Demande de permis de recherches') {
@@ -104,7 +105,7 @@ const jsonFormat = geojsonFeature => {
       id: titreId,
       nom: titreNom,
       typeId,
-      domaineId: 'h',
+      domaineId,
       statutId: 'val',
       police: true,
       references: {

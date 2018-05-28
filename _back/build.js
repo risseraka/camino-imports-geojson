@@ -2,6 +2,11 @@ const fileCreate = require('../_file-create')
 
 const objectCreate = (tmpJson, type, table) => {
   const json = tmpJson.map(n => n[table])
+  // json.reduce((res, cur) => {
+  //   const buggy = cur.id && res.find(e => e.id === cur.id)
+  //   console.log(cur, buggy)
+  //   return buggy ? null : res
+  // }, [])
   const fileContent = JSON.stringify(json, null, 2)
   const fileName = `_exports/back/${type}-${table}.json`
 
@@ -26,20 +31,20 @@ const arrayCreate = (tmpJson, type, table) => {
   fileCreate(fileName, fileContent)
 }
 
-const build = type => {
-  console.log('Type:', type)
-  const sourceJson = require(`../_sources/${type}.json`)
-  const jsonFormat = require(`./${type}/json-format`)
+const build = domaineId => {
+  console.log('Type:', domaineId)
+  const sourceJson = require(`../_sources/${domaineId}.json`)
+  const jsonFormat = require(`./${domaineId}/json-format`)
   const tmpJson = sourceJson.features.map(geojsonFeature =>
     jsonFormat(geojsonFeature)
   )
-  objectCreate(tmpJson, type, 'titres')
-  arrayCreate(tmpJson, type, 'titres-substances-principales')
-  objectCreate(tmpJson, type, 'titres-phases')
-  objectCreate(tmpJson, type, 'titres-phases-emprises')
-  arrayCreate(tmpJson, type, 'titres-geo-points')
-  arrayCreate(tmpJson, type, 'titulaires')
-  arrayCreate(tmpJson, type, 'titres-titulaires')
+  objectCreate(tmpJson, domaineId, 'titres')
+  arrayCreate(tmpJson, domaineId, 'titres-substances-principales')
+  objectCreate(tmpJson, domaineId, 'titres-phases')
+  objectCreate(tmpJson, domaineId, 'titres-phases-emprises')
+  arrayCreate(tmpJson, domaineId, 'titres-geo-points')
+  arrayCreate(tmpJson, domaineId, 'titulaires')
+  arrayCreate(tmpJson, domaineId, 'titres-titulaires')
 }
 
 module.exports = build
