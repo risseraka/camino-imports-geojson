@@ -1,6 +1,6 @@
 # Camino outils geojson
 
-Outil pour convertir les bases de donnée des titres miniers (geojson) en fichiers json prêts à importer dans la base de donnée de Camino.
+Outil pour convertir les bases de données des titres miniers (geojson) en fichiers json prêts à importer dans la base de données de Camino.
 
 * Les fichiers sources doivent être placés dans le dossier `/_sources` et respecter les noms suivants:
 * * `g.json`
