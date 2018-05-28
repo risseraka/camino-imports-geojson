@@ -48,7 +48,7 @@ const jsonFormat = geojsonFeature => {
     }
   })()
 
-  const titrePhaseId = slugify(`${phaseId}-${titreNom}`)
+  const titrePhaseId = slugify(`${domaineId}-${phaseId}-${titreNom}`)
 
   const phasePosition = (() => {
     if (
@@ -118,6 +118,7 @@ const jsonFormat = geojsonFeature => {
         substanceId: 'hydr'
       }
     ],
+    'titres-substances-secondaires': [],
     'titres-phases': {
       id: titrePhaseId,
       phaseId,

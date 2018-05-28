@@ -1,6 +1,8 @@
 const _ = require('lodash')
 const slugify = require('@sindresorhus/slugify')
 const spliceString = require('splice-string')
+
+const substances = require('../../_sources/substances.json')
 const errMsg = '--------------------------------> ERROR'
 
 const jsonFormat = geojsonFeature => {
@@ -29,7 +31,7 @@ const jsonFormat = geojsonFeature => {
     }
   })()
 
-  const titrePhaseId = slugify(`${phaseId}-${titreNom}`)
+  const titrePhaseId = slugify(`${domaineId}-${phaseId}-${titreNom}`)
 
   const phasePosition = (() => {
     return 1
@@ -54,10 +56,25 @@ const jsonFormat = geojsonFeature => {
   const substancePrincipales = (() =>
     _.replace(geojsonFeature.properties['SUBST_PRIN'], /,/g, '')
       .split(' ')
-      .map(s => ({
-        titreId,
-        substanceId: s
-      })))()
+      .reduce((res, cur) => {
+        const sub = substances.find(
+          s =>
+            s['symbole'] === cur ||
+            s['alias'].find(a => a === cur.toLowerCase())
+        )
+        if (!sub) {
+          console.log(`Erreur: substance ${cur} non identifé`)
+        }
+        return sub
+          ? [
+              ...res,
+              {
+                titreId,
+                substanceId: sub.id
+              }
+            ]
+          : res
+      }, []))()
 
   const pointCreate = (polygon, i) =>
     polygon.reduce(
@@ -90,6 +107,9 @@ const jsonFormat = geojsonFeature => {
         : null
     },
     'titres-substances-principales': substancePrincipales,
+    'titres-substances-secondaires': geojsonFeature.properties.SUBST_AUTR
+      ? [{ titreId, substanceId: 'oooo' }]
+      : [],
     'titres-phases': {
       id: titrePhaseId,
       phaseId,
@@ -97,7 +117,7 @@ const jsonFormat = geojsonFeature => {
       date: phaseDate,
       duree:
         Number(spliceString(geojsonFeature.properties.DATE_FIN, 1, 6)) -
-        Number(spliceString(geojsonFeature.properties.DATE_DEB, 1, 6)),
+          Number(spliceString(geojsonFeature.properties.DATE_DEB, 1, 6)) || 0,
       surface: geojsonFeature.properties.AREA,
       position: phasePosition
     },

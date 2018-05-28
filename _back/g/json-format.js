@@ -37,7 +37,7 @@ const jsonFormat = geojsonFeature => {
     }
   })()
 
-  const titrePhaseId = slugify(`${phaseId}-${titreNom}`)
+  const titrePhaseId = slugify(`${domaineId}-${phaseId}-${titreNom}`)
 
   const phasePosition = (() => {
     if (t === 'Demande de permis de recherches') {
@@ -78,7 +78,8 @@ const jsonFormat = geojsonFeature => {
         metier: geojsonFeature.properties.NUMERO
       }
     },
-    'titres-substances-principales': [null],
+    'titres-substances-principales': [],
+    'titres-substances-secondaires': [],
     'titres-phases': {
       id: titrePhaseId,
       phaseId,

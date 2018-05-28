@@ -1,12 +1,13 @@
+const chalk = require('chalk')
 const fileCreate = require('../_file-create')
 
 const objectCreate = (tmpJson, type, table) => {
   const json = tmpJson.map(n => n[table])
-  // json.reduce((res, cur) => {
-  //   const buggy = cur.id && res.find(e => e.id === cur.id)
-  //   console.log(cur, buggy)
-  //   return buggy ? null : res
-  // }, [])
+  json.reduce((res, cur) => {
+    const buggy = cur.id && res.find(e => e.id === cur.id)
+    if (buggy) console.log(chalk.red.bold('> Duplicate: ' + buggy.id + ' '))
+    return buggy ? res : [...res, cur]
+  }, [])
   const fileContent = JSON.stringify(json, null, 2)
   const fileName = `_exports/back/${type}-${table}.json`
 
@@ -40,6 +41,7 @@ const build = domaineId => {
   )
   objectCreate(tmpJson, domaineId, 'titres')
   arrayCreate(tmpJson, domaineId, 'titres-substances-principales')
+  arrayCreate(tmpJson, domaineId, 'titres-substances-secondaires')
   objectCreate(tmpJson, domaineId, 'titres-phases')
   objectCreate(tmpJson, domaineId, 'titres-phases-emprises')
   arrayCreate(tmpJson, domaineId, 'titres-geo-points')
