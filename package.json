@@ -21,7 +21,9 @@
     "back-m-w": "onchange '**/*.js' -i -- npm run back-m",
     "back-g": "node ./_back/g/index.js",
     "back-g-w": "onchange '**/*.js' -i -- npm run back-g",
-    "back": "npm run back-h && npm run back-m && npm run back-g && npm run back-s"
+    "back-c": "node ./_back/c/index.js",
+    "back-c-w": "onchange '**/*.js' -i -- npm run back-c",
+    "back": "npm run back-h && npm run back-m && npm run back-g && npm run back-s &&  && npm run back-c"
   },
   "author": "",
   "license": "ISC",

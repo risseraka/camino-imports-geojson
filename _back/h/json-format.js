@@ -81,7 +81,7 @@ const jsonFormat = geojsonFeature => {
   const titulaires = ['1', '2', '3', '4', '5', '6']
     .filter(id => geojsonFeature.properties[`TIT_PET${id}`])
     .map(i => ({
-      id: slugify(geojsonFeature.properties[`TIT_PET${i}`].slice(0, 24)),
+      id: slugify(geojsonFeature.properties[`TIT_PET${i}`].slice(0, 32)),
       nom: _.startCase(_.toLower(geojsonFeature.properties[`TIT_PET${i}`]))
     }))
 

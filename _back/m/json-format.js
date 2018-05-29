@@ -50,7 +50,7 @@ const jsonFormat = geojsonFeature => {
 
   const titulaires = [
     {
-      id: slugify(geojsonFeature.properties['TITULAIRE'].slice(0, 24)),
+      id: slugify(geojsonFeature.properties['TITULAIRE'].slice(0, 32)),
       nom: _.startCase(_.toLower(geojsonFeature.properties['TITULAIRE']))
     }
   ]
@@ -78,7 +78,7 @@ const jsonFormat = geojsonFeature => {
           : res
       }, []))()
 
-  const pointCreate = (polygon, i) =>
+  const pointsCreate = (polygon, i) =>
     polygon.reduce(
       (points, set, n) => [
         ...points,
@@ -130,7 +130,7 @@ const jsonFormat = geojsonFeature => {
       empriseId: 'ter'
     },
     'titres-geo-points': geojsonFeature.geometry.coordinates.reduce(
-      (res, shape, i) => [...res, ...pointCreate(shape, i)],
+      (res, shape, i) => [...res, ...pointsCreate(shape, i)],
       []
     ),
     titulaires,
