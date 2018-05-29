@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const chalk = require('chalk')
 const slugify = require('@sindresorhus/slugify')
 const leftPad = require('left-pad')
 const spliceString = require('splice-string')
@@ -60,11 +61,11 @@ const jsonFormat = geojsonFeature => {
       .reduce((res, cur) => {
         const sub = substances.find(
           s =>
-            s['symbole'] === cur ||
-            s['alias'].find(a => a === cur.toLowerCase())
+            (s['symbole'] && s['symbole'] === cur) ||
+            (s['alias'] && s['alias'].find(a => a === cur.toLowerCase()))
         )
         if (!sub) {
-          console.log(`Erreur: substance ${cur} non identifé`)
+          console.log(chalk.red.bold(`Erreur: substance ${cur} non identifé`))
         }
         return sub
           ? [

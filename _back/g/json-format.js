@@ -60,6 +60,12 @@ const jsonFormat = geojsonFeature => {
     phaseDate = '1900-01-01'
   }
 
+  const phaseDuree =
+    (geojsonFeature.properties.DATE2
+      ? Number(spliceString(geojsonFeature.properties.DATE2, 4, 6))
+      : Number(spliceString(geojsonFeature.properties.DATE1, 4, 6))) -
+    Number(spliceString(phaseDate, 4, 6))
+
   const titulaires = ['1', '2', '3']
     .filter(id => geojsonFeature.properties[`TIT_PET${id}`])
     .map(i => ({
@@ -91,11 +97,7 @@ const jsonFormat = geojsonFeature => {
       phaseId,
       titreId,
       date: phaseDate,
-      duree:
-        (geojsonFeature.properties.DATE2
-          ? Number(spliceString(geojsonFeature.properties.DATE2, 4, 6))
-          : Number(spliceString(geojsonFeature.properties.DATE1, 4, 6))) -
-        Number(spliceString(phaseDate, 4, 6)),
+      duree: phaseDuree,
       surface: geojsonFeature.properties.SUPERFICIE,
       position: phasePosition
     },

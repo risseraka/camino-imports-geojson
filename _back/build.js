@@ -1,13 +1,23 @@
 const chalk = require('chalk')
-const fileCreate = require('../_file-create')
+const fileCreate = require('../_utils/file-create')
 
-const objectCreate = (tmpJson, type, table) => {
-  const json = tmpJson.map(n => n[table])
+const objDedup = (json, key) =>
   json.reduce((res, cur) => {
-    const buggy = cur.id && res.find(e => e.id === cur.id)
-    if (buggy) console.log(chalk.red.bold('> Duplicate: ' + buggy.id + ' '))
+    const buggy = cur[key] && res.find(e => e[key] === cur[key])
+    if (buggy) console.log(chalk.red.bold(`Duplicate: ${buggy[key]}`))
     return buggy ? res : [...res, cur]
   }, [])
+
+const arrayDedup = (arrayIn, arrayOut) =>
+  arrayIn.filter(
+    eNew => eNew && !arrayOut.find(e => eNew.id && eNew.id === e.id)
+  )
+
+const objectCreate = (tmpJson, type, table) => {
+  let json = tmpJson.map(n => n[table])
+  json = objDedup(json, 'id')
+  json = objDedup(json, 'titrePhaseId')
+  json = objDedup(json, 'titreId')
   const fileContent = JSON.stringify(json, null, 2)
   const fileName = `_exports/back/${type}-${table}.json`
 
@@ -17,15 +27,7 @@ const objectCreate = (tmpJson, type, table) => {
 const arrayCreate = (tmpJson, type, table) => {
   let json = tmpJson
     .map(n => n[table])
-    .reduce(
-      (res, arr) => [
-        ...res,
-        ...arr.filter(
-          eNew => eNew && !res.find(e => eNew.id && eNew.id === e.id)
-        )
-      ],
-      []
-    )
+    .reduce((res, arr) => [...res, ...arrayDedup(arr, res)], [])
   const fileContent = JSON.stringify(json, null, 2)
   const fileName = `_exports/back/${type}-${table}.json`
 
