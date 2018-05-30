@@ -1,6 +1,6 @@
 const _ = require('lodash')
 const slugify = require('@sindresorhus/slugify')
-const pointsCreate = require('../../_utils/pointsCreate')
+const pointsCreate = require('../../_utils/points-create')
 
 const errMsg = '--------------------------------> ERROR'
 

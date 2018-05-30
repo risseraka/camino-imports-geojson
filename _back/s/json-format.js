@@ -4,7 +4,7 @@ const slugify = require('@sindresorhus/slugify')
 const leftPad = require('left-pad')
 const spliceString = require('splice-string')
 const substances = require('../../_sources/substances.json')
-const pointsCreate = require('../../_utils/pointsCreate')
+const pointsCreate = require('../../_utils/points-create')
 const errMsg = '--------------------------------> ERROR'
 
 const jsonFormat = geojsonFeature => {

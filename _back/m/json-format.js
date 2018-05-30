@@ -3,7 +3,7 @@ const chalk = require('chalk')
 const slugify = require('@sindresorhus/slugify')
 const leftPad = require('left-pad')
 const spliceString = require('splice-string')
-const pointsCreate = require('../../_utils/pointsCreate')
+const pointsCreate = require('../../_utils/points-create')
 
 const substances = require('../../_sources/substances.json')
 const errMsg = '--------------------------------> ERROR'
