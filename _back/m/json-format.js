@@ -3,6 +3,7 @@ const chalk = require('chalk')
 const slugify = require('@sindresorhus/slugify')
 const leftPad = require('left-pad')
 const spliceString = require('splice-string')
+const pointsCreate = require('../../_utils/pointsCreate')
 
 const substances = require('../../_sources/substances.json')
 const errMsg = '--------------------------------> ERROR'
@@ -78,24 +79,6 @@ const jsonFormat = geojsonFeature => {
           : res
       }, []))()
 
-  const pointsCreate = (polygon, i) =>
-    polygon.reduce(
-      (points, set, n) => [
-        ...points,
-        {
-          id: slugify(
-            `${titrePhaseId}-contour-${leftPad(i, 2, 0)}-${leftPad(n, 3, 0)}`
-          ),
-          coordonees: set.join(),
-          groupe: `contour-${leftPad(i, 2, 0)}`,
-          titrePhaseId,
-          position: leftPad(n, 3, 0),
-          nom: String(n)
-        }
-      ],
-      []
-    )
-
   return {
     titres: {
       id: titreId,
@@ -130,7 +113,10 @@ const jsonFormat = geojsonFeature => {
       empriseId: 'ter'
     },
     'titres-geo-points': geojsonFeature.geometry.coordinates.reduce(
-      (res, shape, i) => [...res, ...pointsCreate(shape, i)],
+      (res, contour, i) => [
+        ...res,
+        ...pointsCreate(titrePhaseId, contour, 0, i)
+      ],
       []
     ),
     titulaires,

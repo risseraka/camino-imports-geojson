@@ -4,6 +4,7 @@ const slugify = require('@sindresorhus/slugify')
 const leftPad = require('left-pad')
 const spliceString = require('splice-string')
 const substances = require('../../_sources/substances.json')
+const pointsCreate = require('../../_utils/pointsCreate')
 const errMsg = '--------------------------------> ERROR'
 
 const jsonFormat = geojsonFeature => {
@@ -55,24 +56,6 @@ const jsonFormat = geojsonFeature => {
     }
   ]
 
-  const pointsCreate = (polygon, i) =>
-    polygon.reduce(
-      (r, set, n) => [
-        ...r,
-        {
-          id: slugify(
-            `${titrePhaseId}-contour-${leftPad(i, 2, 0)}-${leftPad(n, 3, 0)}`
-          ),
-          coordonees: set.join(),
-          groupe: `contour-${leftPad(i, 2, 0)}`,
-          titrePhaseId,
-          position: n,
-          nom: String(n)
-        }
-      ],
-      []
-    )
-
   const substancePrincipales = (() =>
     geojsonFeature.properties['CONTENU']
       ? geojsonFeature.properties['CONTENU'].split('/').reduce((res, cur) => {
@@ -120,16 +103,19 @@ const jsonFormat = geojsonFeature => {
       empriseId: 'ter'
     },
     'titres-geo-points': geojsonFeature.geometry.coordinates.reduce(
-      (res, shape, i) =>
+      (res, contour, i) =>
         geojsonFeature.geometry.type === 'MultiPolygon'
           ? [
               ...res,
-              ...shape.reduce(
-                (ps, polygon, n) => [...ps, ...pointsCreate(polygon, i)],
+              ...contour.reduce(
+                (ps, cont, n) => [
+                  ...ps,
+                  ...pointsCreate(titrePhaseId, cont, n, i)
+                ],
                 []
               )
             ]
-          : [...res, ...pointsCreate(shape, i)],
+          : [...res, ...pointsCreate(titrePhaseId, contour, 0, i)],
       []
     ),
     titulaires,

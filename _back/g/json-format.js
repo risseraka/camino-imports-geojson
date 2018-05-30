@@ -2,6 +2,7 @@ const _ = require('lodash')
 const slugify = require('@sindresorhus/slugify')
 const leftPad = require('left-pad')
 const spliceString = require('splice-string')
+const pointsCreate = require('../../_utils/pointsCreate')
 const errMsg = '--------------------------------> ERROR'
 
 const jsonFormat = geojsonFeature => {
@@ -106,28 +107,9 @@ const jsonFormat = geojsonFeature => {
       empriseId: 'ter'
     },
     'titres-geo-points': geojsonFeature.geometry.coordinates.reduce(
-      (res, shape, i) => [
+      (res, contour, i) => [
         ...res,
-        ...shape.reduce(
-          (r, set, n) => [
-            ...r,
-            {
-              id: slugify(
-                `${titrePhaseId}-contour-${leftPad(i, 2, 0)}-${leftPad(
-                  n,
-                  3,
-                  0
-                )}`
-              ),
-              coordonees: set.join(),
-              groupe: `contour-${leftPad(i, 2, 0)}`,
-              titrePhaseId,
-              position: n,
-              nom: String(n)
-            }
-          ],
-          []
-        )
+        ...pointsCreate(titrePhaseId, contour, 0, i)
       ],
       []
     ),
