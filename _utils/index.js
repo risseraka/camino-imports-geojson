@@ -24,4 +24,4 @@ const pointsCreate = (titrePhaseId, contour, groupeId, contourId) =>
     []
   )
 
-module.exports = pointsCreate
+module.exports = { pointsCreate }

@@ -12,8 +12,7 @@
     "front-m-w": "onchange '**/*.js' -i -- npm run front-m",
     "front-g": "node ./_front/g/index.js",
     "front-g-w": "onchange '**/*.js' -i -- npm run front-g",
-    "front":
-      "npm run front-s && npm run front-h && npm run front-m && npm run front-g",
+    "front": "npm run front-s && npm run front-h && npm run front-m && npm run front-g",
     "back-s": "node ./_back/s/index.js",
     "back-s-w": "onchange '**/*.js' -i -- npm run back-s",
     "back-h": "node ./_back/h/index.js",
@@ -24,8 +23,9 @@
     "back-g-w": "onchange '**/*.js' -i -- npm run back-g",
     "back-c": "node ./_back/c/index.js",
     "back-c-w": "onchange '**/*.js' -i -- npm run back-c",
-    "back":
-      "npm run back-h && npm run back-m && npm run back-g && npm run back-s && npm run back-c"
+    "back-m973": "node ./_back/m973/index.js",
+    "back-m973-w": "onchange '**/*.js' -i -- npm run back-m973",
+    "back": "npm run back-h && npm run back-m && npm run back-g && npm run back-s && npm run back-c && npm run back-m973"
   },
   "author": "",
   "license": "ISC",

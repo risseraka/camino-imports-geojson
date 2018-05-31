@@ -1,6 +1,7 @@
 const _ = require('lodash')
+const chalk = require('chalk')
 const slugify = require('@sindresorhus/slugify')
-const pointsCreate = require('../../_utils/points-create')
+const { pointsCreate } = require('../../_utils')
 
 const errMsg = '--------------------------------> ERROR'
 
@@ -18,7 +19,16 @@ const jsonFormat = geojsonFeature => {
   })()
 
   const titreNom = _.startCase(_.toLower(geojsonFeature.properties.nom))
-  const titreId = slugify(`${domaineId}-${typeId}-${titreNom}`)
+
+  const phaseDate = geojsonFeature.properties.date || '2000-01-01'
+
+  if (phaseDate === '') {
+    console.log(chalk.red.bold(`Erreur: date manquante ${titreNom}`))
+  }
+
+  const dateId = phaseDate.slice(0, 4)
+
+  const titreId = slugify(`${domaineId}-${typeId}-${titreNom}-${dateId}`)
 
   const phaseId = (() => {
     if (t === 'concession') {
@@ -30,15 +40,9 @@ const jsonFormat = geojsonFeature => {
     }
   })()
 
-  const titrePhaseId = slugify(`${domaineId}-${phaseId}-${titreNom}`)
+  const titrePhaseId = slugify(`${domaineId}-${phaseId}-${titreNom}-${dateId}`)
 
   const phasePosition = 1
-
-  let phaseDate = geojsonFeature.properties.date
-
-  if (phaseDate === '') {
-    phaseDate = '2000-01-01'
-  }
 
   const phaseDuree =
     geojsonFeature.properties['DUREE_A,C,10'] ||

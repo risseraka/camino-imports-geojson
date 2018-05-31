@@ -10,24 +10,24 @@ const errMsg = '--------------------------------> ERROR'
 
 const jsonFormat = geojsonFeature => {
   const domaineId = 'm'
-  const t = _.capitalize(_.toLower(geojsonFeature.properties.NATURE))
+  const t = geojsonFeature.properties.type
   const typeId = (() => {
-    if (t === 'Permis exclusif de recherches') {
+    if (t === 'PER') {
       return 'prx'
     } else if (t === 'Concession') {
       return 'cxx'
+    } else if (t === 'axm') {
+      return 'axm'
+    } else if (t === 'PEX') {
+      return 'pxm'
     } else {
       return errMsg
     }
   })()
 
-  const titreNom = _.startCase(_.toLower(geojsonFeature.properties.NOM_TITRE))
+  const titreNom = _.startCase(_.toLower(geojsonFeature.properties.nomtitre))
 
-  const phaseDate =
-    _.replace(geojsonFeature.properties.DATE_DEB, /\//g, '-')
-      .split('-')
-      .reverse()
-      .join('-') || '2000-01-01'
+  const phaseDate = _.replace(geojsonFeature.properties.date_oct, /\//g, '-')
 
   if (phaseDate === '') {
     console.log(chalk.red.bold(`Erreur: date manquante ${titreNom}`))
@@ -37,15 +37,7 @@ const jsonFormat = geojsonFeature => {
 
   const titreId = slugify(`${domaineId}-${typeId}-${titreNom}-${dateId}`)
 
-  const phaseId = (() => {
-    if (t === 'Permis exclusif de recherches') {
-      return 'prx-oct'
-    } else if (t === 'Concession') {
-      return 'cxx-oct'
-    } else {
-      return errMsg
-    }
-  })()
+  const phaseId = `${typeId}-oct`
 
   const titrePhaseId = slugify(`${domaineId}-${phaseId}-${titreNom}-${dateId}`)
 
@@ -55,33 +47,43 @@ const jsonFormat = geojsonFeature => {
 
   const titulaires = [
     {
-      id: slugify(geojsonFeature.properties['TITULAIRE'].slice(0, 32)),
-      nom: _.startCase(_.toLower(geojsonFeature.properties['TITULAIRE']))
+      id: slugify(geojsonFeature.properties['titulaire'].slice(0, 32)),
+      nom: _.startCase(_.toLower(geojsonFeature.properties['titulaire']))
     }
   ]
 
-  const substancePrincipales = (() =>
-    _.replace(geojsonFeature.properties['SUBST_PRIN'], /,/g, '')
-      .split(' ')
-      .reduce((res, cur) => {
-        const sub = substances.find(
-          s =>
-            (s['symbole'] && s['symbole'] === cur) ||
-            (s['alias'] && s['alias'].find(a => a === cur.toLowerCase()))
-        )
-        if (!sub) {
-          console.log(chalk.red.bold(`Erreur: substance ${cur} non identifé`))
-        }
-        return sub
-          ? [
-              ...res,
-              {
-                titreId,
-                substanceId: sub.id
-              }
-            ]
-          : res
-      }, []))()
+  const substancesCreate = subs =>
+    subs.reduce((res, cur) => {
+      const sub = substances.find(
+        s =>
+          (s['symbole'] && s['symbole'] === cur) ||
+          (cur.includes('connexes') && 'oooo')
+      )
+      if (!sub) {
+        console.log(chalk.red.bold(`Erreur: substance ${cur} non identifé`))
+      }
+
+      return cur && sub
+        ? [
+            ...res,
+            {
+              titreId,
+              substanceId: sub.id
+            }
+          ]
+        : res
+    }, [])
+
+  const substancePrincipales = (() => {
+    const substances = geojsonFeature.properties['subst_1']
+    const s = substances ? substancesCreate(substances.split(', ')) : []
+    return s
+  })()
+
+  const substanceConnexes = (() => {
+    const substances = geojsonFeature.properties['subst_2']
+    return substances ? substancesCreate(substances.split(', ')) : []
+  })()
 
   return {
     titres: {
@@ -98,9 +100,7 @@ const jsonFormat = geojsonFeature => {
         : null
     },
     'titres-substances-principales': substancePrincipales,
-    'titres-substances-connexes': geojsonFeature.properties.SUBST_AUTR
-      ? [{ titreId, substanceId: 'oooo' }]
-      : [],
+    'titres-substances-connexes': substanceConnexes,
     'titres-phases': {
       id: titrePhaseId,
       phaseId,

@@ -1,8 +1,9 @@
 const _ = require('lodash')
+const chalk = require('chalk')
 const slugify = require('@sindresorhus/slugify')
 const leftPad = require('left-pad')
 const spliceString = require('splice-string')
-const pointsCreate = require('../../_utils/points-create')
+const { pointsCreate } = require('../../_utils')
 const errMsg = '--------------------------------> ERROR'
 
 const jsonFormat = geojsonFeature => {
@@ -23,7 +24,16 @@ const jsonFormat = geojsonFeature => {
   })()
 
   const titreNom = _.startCase(_.toLower(geojsonFeature.properties.NOM))
-  const titreId = slugify(`${domaineId}-${typeId}-${titreNom}`)
+
+  let phaseDate =
+    _.replace(geojsonFeature.properties.DATE_JO_RF, /\//g, '-') || '2000-01-01'
+
+  if (phaseDate === '') {
+    console.log(chalk.red.bold(`Erreur: date manquante ${titreNom}`))
+  }
+  const dateId = phaseDate.slice(0, 4)
+
+  const titreId = slugify(`${domaineId}-${typeId}-${titreNom}-${dateId}`)
 
   const phaseId = (() => {
     if (t === 'Demande de permis de recherches') {
@@ -39,7 +49,7 @@ const jsonFormat = geojsonFeature => {
     }
   })()
 
-  const titrePhaseId = slugify(`${domaineId}-${phaseId}-${titreNom}`)
+  const titrePhaseId = slugify(`${domaineId}-${phaseId}-${titreNom}-${dateId}`)
 
   const phasePosition = (() => {
     if (t === 'Demande de permis de recherches') {
@@ -54,12 +64,6 @@ const jsonFormat = geojsonFeature => {
       return errMsg
     }
   })()
-
-  let phaseDate = _.replace(geojsonFeature.properties.DATE_JO_RF, /\//g, '-')
-
-  if (phaseDate === '') {
-    phaseDate = '1900-01-01'
-  }
 
   const phaseDuree =
     (geojsonFeature.properties.DATE2
