@@ -92,7 +92,7 @@ const jsonFormat = geojsonFeature => {
         substanceId: 'geoh'
       }
     ],
-    'titres-substances-secondaires': [],
+    'titres-substances-connexes': [],
     'titres-phases': {
       id: titrePhaseId,
       phaseId,

@@ -27,10 +27,10 @@ const substancesPrincipales = geoJson =>
       return sub ? [...res, sub.id] : res
     }, [])
 
-const substancesSecondaires = geoJson =>
+const substancesConnexes = geoJson =>
   geoJson.features.map(geojsonFeature => geojsonFeature.properties.SUBST_AUTR)
 
 module.exports = geoJson => {
   // return substancesPrincipales(geoJson)
-  return substancesSecondaires(geoJson)
+  return substancesConnexes(geoJson)
 }

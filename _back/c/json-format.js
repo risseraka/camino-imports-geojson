@@ -77,7 +77,7 @@ const jsonFormat = geojsonFeature => {
       }
     },
     'titres-substances-principales': substancePrincipales,
-    'titres-substances-secondaires': [],
+    'titres-substances-connexes': [],
     'titres-phases': {
       id: titrePhaseId,
       phaseId,

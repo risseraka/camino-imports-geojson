@@ -43,7 +43,7 @@ const build = domaineId => {
   )
   objectCreate(tmpJson, domaineId, 'titres')
   arrayCreate(tmpJson, domaineId, 'titres-substances-principales')
-  arrayCreate(tmpJson, domaineId, 'titres-substances-secondaires')
+  arrayCreate(tmpJson, domaineId, 'titres-substances-connexes')
   objectCreate(tmpJson, domaineId, 'titres-phases')
   objectCreate(tmpJson, domaineId, 'titres-phases-emprises')
   arrayCreate(tmpJson, domaineId, 'titres-geo-points')

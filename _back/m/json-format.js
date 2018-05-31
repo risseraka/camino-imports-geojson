@@ -94,7 +94,7 @@ const jsonFormat = geojsonFeature => {
         : null
     },
     'titres-substances-principales': substancePrincipales,
-    'titres-substances-secondaires': geojsonFeature.properties.SUBST_AUTR
+    'titres-substances-connexes': geojsonFeature.properties.SUBST_AUTR
       ? [{ titreId, substanceId: 'oooo' }]
       : [],
     'titres-phases': {
