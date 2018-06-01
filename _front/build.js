@@ -3,11 +3,11 @@ const fileCreate = require('../_file-create')
 
 const build = domaineId => {
   console.log('Type:', domaineId)
-  const source = require(`../_sources/${domaineId}.json`)
+  const source = require(`../sources/${domaineId}.json`)
   const jsonArrayCreate = require(`./${domaineId}/json-array-create`)
   const jsonObj = jsonArrayCreate(source, domaineId)
   const fileContent = JSON.stringify(jsonObj, null, 2)
-  const fileName = `_exports/front/${domaineId}.json`
+  const fileName = `exports/front/${domaineId}.json`
 
   fileCreate(fileName, fileContent)
 }

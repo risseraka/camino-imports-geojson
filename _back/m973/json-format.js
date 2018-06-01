@@ -5,7 +5,7 @@ const leftPad = require('left-pad')
 const spliceString = require('splice-string')
 const { pointsCreate } = require('../../_utils')
 
-const substances = require('../../_sources/substances.json')
+const substances = require('../../sources/substances.json')
 const errMsg = '--------------------------------> ERROR'
 
 const jsonFormat = geojsonFeature => {

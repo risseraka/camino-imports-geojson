@@ -1,6 +1,6 @@
 const _ = require('lodash')
 const spliceString = require('splice-string')
-const substances = require('../../_sources/substances.json')
+const substances = require('../../sources/substances.json')
 
 const substancesPrincipales = geoJson =>
   geoJson.features

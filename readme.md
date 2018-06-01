@@ -1,13 +1,13 @@
-# Camino outils geojson
+# Camino imports geojson
 
-Outil pour convertir les bases de données des titres miniers (geojson) en fichiers json prêts à importer dans la base de données de Camino.
+Scripts pour convertir les bases de données des titres miniers (geojson) en fichiers json prêts à importer dans la base de données de Camino.
 
-* Les fichiers sources doivent être placés dans le dossier `/_sources` et respecter les noms suivants:
+* Les fichiers sources doivent être placés dans le dossier `/sources` et respecter les noms suivants:
 * * `g.json`
 * * `h.json`
 * * `m.json`
 * * `s.json`
-* Les fichiers transformés sont accessibles dans le dossier `/_exports`.
+* Les fichiers transformés sont accessibles dans le dossier `/exports`.
 
 ```bash
 # installation

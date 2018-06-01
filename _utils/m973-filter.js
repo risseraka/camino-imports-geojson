@@ -1,6 +1,6 @@
 const fileCreate = require('../_utils/file-create')
-const mAxm = require('../_sources/m973-axm.json')
-const mList = require('../_sources/m973-cxx-prx-pxm.json')
+const mAxm = require('../sources/m973-axm.json')
+const mList = require('../sources/m973-cxx-prx-pxm.json')
 
 const jsonObj = {
   type: 'FeatureCollection',
@@ -21,6 +21,6 @@ const jsonObj = {
     .filter(f => f.properties.statut === 'valide')
 }
 const fileContent = JSON.stringify(jsonObj, null, 2)
-const fileName = `_sources/m973.json`
+const fileName = `sources/m973.json`
 
 fileCreate(fileName, fileContent)

@@ -1,5 +1,5 @@
 const fileCreate = require('./file-create')
-const titres = require('../_sources/m973.json')
+const titres = require('../sources/m973.json')
 
 console.log('start')
 
@@ -8,7 +8,7 @@ console.log('start')
 //   if (buggy) console.log(buggy.id)
 //   return buggy ? res : [...res, cur]
 // }, [])
-const fileName = '_sources/m-test.json'
+const fileName = 'sources/m-test.json'
 const json = titres.features
   .map(t => t.properties.statut)
   .reduce(

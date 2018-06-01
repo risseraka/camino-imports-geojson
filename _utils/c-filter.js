@@ -1,6 +1,6 @@
 const fileCreate = require('../_utils/file-create')
-const cGeo = require('../_sources/c-geo.json')
-const cList = require('../_sources/c-list.json')
+const cGeo = require('../sources/c-geo.json')
+const cList = require('../sources/c-list.json')
 
 const jsonArrayCreate = (list, geo) =>
   list.map(el => ({
@@ -16,6 +16,6 @@ const jsonObj = {
   features: jsonArrayCreate(cList, cGeo)
 }
 const fileContent = JSON.stringify(jsonObj, null, 2)
-const fileName = `_sources/c.json`
+const fileName = `sources/c.json`
 
 fileCreate(fileName, fileContent)
