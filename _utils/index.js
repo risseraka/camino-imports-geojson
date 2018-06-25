@@ -1,13 +1,13 @@
 const leftPad = require('left-pad')
 const slugify = require('@sindresorhus/slugify')
 
-const pointsCreate = (titrePhaseId, contour, groupeId, contourId) =>
+const pointsCreate = (titreDemarcheEtapeId, contour, groupeId, contourId) =>
   contour.reduce(
     (r, set, pointId) => [
       ...r,
       {
         id: slugify(
-          `${titrePhaseId}-g${leftPad(groupeId, 2, 0)}-c${leftPad(
+          `${titreDemarcheEtapeId}-g${leftPad(groupeId, 2, 0)}-c${leftPad(
             contourId,
             2,
             0
@@ -17,7 +17,7 @@ const pointsCreate = (titrePhaseId, contour, groupeId, contourId) =>
         groupe: groupeId,
         contour: contourId,
         point: pointId,
-        titrePhaseId,
+        titreDemarcheEtapeId,
         nom: String(pointId)
       }
     ],

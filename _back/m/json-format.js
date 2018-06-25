@@ -23,21 +23,22 @@ const jsonFormat = geojsonFeature => {
 
   const titreNom = _.startCase(_.toLower(geojsonFeature.properties.NOM_TITRE))
 
-  const phaseDate =
-    _.replace(geojsonFeature.properties.DATE_DEB, /\//g, '-')
+  const demarcheEtapeDate =
+    _
+      .replace(geojsonFeature.properties.DATE_DEB, /\//g, '-')
       .split('-')
       .reverse()
       .join('-') || '2000-01-01'
 
-  if (phaseDate === '') {
+  if (demarcheEtapeDate === '') {
     console.log(chalk.red.bold(`Erreur: date manquante ${titreNom}`))
   }
 
-  const dateId = phaseDate.slice(0, 4)
+  const dateId = demarcheEtapeDate.slice(0, 4)
 
   const titreId = slugify(`${domaineId}-${typeId}-${titreNom}-${dateId}`)
 
-  const phaseId = (() => {
+  const demarcheId = (() => {
     if (t === 'Permis exclusif de recherches') {
       return 'prx-oct'
     } else if (t === 'Concession') {
@@ -47,23 +48,28 @@ const jsonFormat = geojsonFeature => {
     }
   })()
 
-  const titrePhaseId = slugify(`${domaineId}-${phaseId}-${titreNom}-${dateId}`)
+  const titreDemarcheId = slugify(
+    `${domaineId}-${demarcheId}-${titreNom}-${dateId}`
+  )
 
-  const phasePosition = (() => {
+  const titreDemarcheEtapeId = `${titreDemarcheId}-dpu`
+
+  const demarchePosition = (() => {
     return 1
   })()
 
-  const titulaires = [
+  const entreprises = [
     {
-      id: slugify(geojsonFeature.properties['TITULAIRE'].slice(0, 32)),
+      id: slugify(geojsonFeature.properties['TITULAIRE'].slice(0, 64)),
       nom: _.startCase(_.toLower(geojsonFeature.properties['TITULAIRE']))
     }
   ]
 
   const substancePrincipales = (() =>
-    _.replace(geojsonFeature.properties['SUBST_PRIN'], /,/g, '')
+    _
+      .replace(geojsonFeature.properties['SUBST_PRIN'], /,/g, '')
       .split(' ')
-      .reduce((res, cur) => {
+      .reduce((res, cur, i) => {
         const sub = substances.find(
           s =>
             (s['symbole'] && s['symbole'] === cur) ||
@@ -76,8 +82,9 @@ const jsonFormat = geojsonFeature => {
           ? [
               ...res,
               {
-                titreId,
-                substanceId: sub.id
+                titreDemarcheEtapeId,
+                substanceId: sub.id,
+                ordre: i + 1
               }
             ]
           : res
@@ -89,42 +96,60 @@ const jsonFormat = geojsonFeature => {
       nom: titreNom,
       typeId,
       domaineId,
-      statutId: 'val',
-      police: true,
       references: geojsonFeature.properties.CODE
         ? {
             métier: geojsonFeature.properties.CODE
           }
         : null
     },
-    'titres-substances-principales': substancePrincipales,
-    'titres-substances-connexes': geojsonFeature.properties.SUBST_AUTR
-      ? [{ titreId, substanceId: 'oooo' }]
-      : [],
-    'titres-phases': {
-      id: titrePhaseId,
-      phaseId,
+    titresSubstances: geojsonFeature.properties.SUBST_AUTR
+      ? [
+          ...substancePrincipales,
+          {
+            titreDemarcheEtapeId,
+            substanceId: 'oooo',
+            connexe: true,
+            ordre: 1
+          }
+        ]
+      : substancePrincipales,
+    titresDemarches: {
+      id: titreDemarcheId,
+      demarcheId,
       titreId,
-      date: phaseDate,
+      ordre: demarchePosition
+    },
+    titresDemarchesEtapes: {
+      id: titreDemarcheEtapeId,
+      titreDemarcheId: titreDemarcheId,
+      etapeId: 'dpu',
+      ordre: 1,
+      date: demarcheEtapeDate,
       duree:
         Number(spliceString(geojsonFeature.properties.DATE_FIN, 1, 6)) -
           Number(spliceString(geojsonFeature.properties.DATE_DEB, 1, 6)) || 0,
       surface: geojsonFeature.properties.AREA,
-      position: phasePosition
+      points: true,
+      substances: true,
+      titulaires: true,
+      etape_statut_id: 'ter'
     },
-    'titres-phases-emprises': {
-      titrePhaseId,
+    titresEmprises: {
+      titreDemarcheEtapeId,
       empriseId: 'ter'
     },
-    'titres-geo-points': geojsonFeature.geometry.coordinates.reduce(
+    titresPoints: geojsonFeature.geometry.coordinates.reduce(
       (res, contour, i) => [
         ...res,
-        ...pointsCreate(titrePhaseId, contour, 0, i)
+        ...pointsCreate(titreDemarcheEtapeId, contour, 0, i)
       ],
       []
     ),
-    titulaires,
-    'titres-titulaires': titulaires.map(t => ({ titulaireId: t.id, titreId }))
+    entreprises,
+    titresTitulaires: entreprises.map(t => ({
+      entrepriseId: t.id,
+      titreDemarcheEtapeId
+    }))
   }
 }
 

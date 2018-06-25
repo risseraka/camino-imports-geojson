@@ -1,5 +1,14 @@
 const chalk = require('chalk')
 const fileCreate = require('../_utils/file-create')
+const decamelize = require('decamelize')
+
+const objDecamelize = obj =>
+  obj.map(t =>
+    Object.keys(t).reduce(
+      (res, cur) => Object.assign(res, { [decamelize(cur)]: t[cur] }),
+      {}
+    )
+  )
 
 const objDedup = (json, key) =>
   json.reduce((res, cur) => {
@@ -13,23 +22,23 @@ const arrayDedup = (arrayIn, arrayOut) =>
     eNew => eNew && !arrayOut.find(e => eNew.id && eNew.id === e.id)
   )
 
-const objectCreate = (tmpJson, type, table) => {
-  let json = tmpJson.map(n => n[table])
+const objectCreate = (tmpJson, type, key) => {
+  let json = tmpJson.map(n => n[key])
   json = objDedup(json, 'id')
   json = objDedup(json, 'titrePhaseId')
   json = objDedup(json, 'titreId')
-  const fileContent = JSON.stringify(json, null, 2)
-  const fileName = `exports/back/${type}-${table}.json`
+  const fileContent = JSON.stringify(objDecamelize(json), null, 2)
+  const fileName = `exports/back/${type}-${decamelize(key)}.json`
 
   fileCreate(fileName, fileContent)
 }
 
-const arrayCreate = (tmpJson, type, table) => {
+const arrayCreate = (tmpJson, type, key) => {
   let json = tmpJson
-    .map(n => n[table])
+    .map(n => n[key])
     .reduce((res, arr) => [...res, ...arrayDedup(arr, res)], [])
-  const fileContent = JSON.stringify(json, null, 2)
-  const fileName = `exports/back/${type}-${table}.json`
+  const fileContent = JSON.stringify(objDecamelize(json), null, 2)
+  const fileName = `exports/back/${type}-${decamelize(key)}.json`
 
   fileCreate(fileName, fileContent)
 }
@@ -42,13 +51,13 @@ const build = domaineId => {
     jsonFormat(geojsonFeature)
   )
   objectCreate(tmpJson, domaineId, 'titres')
-  arrayCreate(tmpJson, domaineId, 'titres-substances-principales')
-  arrayCreate(tmpJson, domaineId, 'titres-substances-connexes')
-  objectCreate(tmpJson, domaineId, 'titres-phases')
-  objectCreate(tmpJson, domaineId, 'titres-phases-emprises')
-  arrayCreate(tmpJson, domaineId, 'titres-geo-points')
-  arrayCreate(tmpJson, domaineId, 'titulaires')
-  arrayCreate(tmpJson, domaineId, 'titres-titulaires')
+  arrayCreate(tmpJson, domaineId, 'titresSubstances')
+  objectCreate(tmpJson, domaineId, 'titresDemarches')
+  objectCreate(tmpJson, domaineId, 'titresDemarchesEtapes')
+  arrayCreate(tmpJson, domaineId, 'titresPoints')
+  arrayCreate(tmpJson, domaineId, 'entreprises')
+  arrayCreate(tmpJson, domaineId, 'titresTitulaires')
+  objectCreate(tmpJson, domaineId, 'titresEmprises')
 }
 
 module.exports = build
