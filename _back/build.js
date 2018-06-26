@@ -1,63 +1,50 @@
-const chalk = require('chalk')
-const fileCreate = require('../_utils/file-create')
 const decamelize = require('decamelize')
+const Json2csvParser = require('json2csv').Parser
 
-const objDecamelize = obj =>
-  obj.map(t =>
-    Object.keys(t).reduce(
-      (res, cur) => Object.assign(res, { [decamelize(cur)]: t[cur] }),
-      {}
-    )
-  )
+const fileCreate = require('../_utils/file-create')
+const arrayFlat = require('../_utils/array-flat.js')
+const arrayMap = require('../_utils/array-map.js')
+const objDedup = require('../_utils/object-dedup.js')
+const objDecamelize = require('../_utils/object-decamelize.js')
 
-const objDedup = (json, key) =>
-  json.reduce((res, cur) => {
-    const buggy = cur[key] && res.find(e => e[key] === cur[key])
-    if (buggy) console.log(chalk.red.bold(`Duplicate: ${buggy[key]}`))
-    return buggy ? res : [...res, cur]
-  }, [])
-
-const arrayDedup = (arrayIn, arrayOut) =>
-  arrayIn.filter(
-    eNew => eNew && !arrayOut.find(e => eNew.id && eNew.id === e.id)
-  )
-
-const objectCreate = (tmpJson, type, key) => {
-  let json = tmpJson.map(n => n[key])
-  json = objDedup(json, 'id')
-  json = objDedup(json, 'titrePhaseId')
-  json = objDedup(json, 'titreId')
-  const fileContent = JSON.stringify(objDecamelize(json), null, 2)
-  const fileName = `exports/back/${type}-${decamelize(key)}.json`
-
-  fileCreate(fileName, fileContent)
+const filesCreate = (json, domaine, key) => {
+  const jsonFileContent = JSON.stringify(objDecamelize(json), null, 2)
+  const jsonFileName = `exports/json/${domaine}-${decamelize(key)}.json`
+  fileCreate(jsonFileName, jsonFileContent)
 }
 
-const arrayCreate = (tmpJson, type, key) => {
-  let json = tmpJson
-    .map(n => n[key])
-    .reduce((res, arr) => [...res, ...arrayDedup(arr, res)], [])
-  const fileContent = JSON.stringify(objDecamelize(json), null, 2)
-  const fileName = `exports/back/${type}-${decamelize(key)}.json`
+const objectsDedup = json =>
+  objDedup(json, ['id', 'titreDemarcheId', 'titreId'])
 
-  fileCreate(fileName, fileContent)
-}
+const arraysKeys = [
+  'titresSubstances',
+  'titresPoints',
+  'entreprises',
+  'titresTitulaires'
+]
+
+const objectsKeys = [
+  'titres',
+  'titresDemarches',
+  'titresDemarchesEtapes',
+  'titresEmprises'
+]
 
 const build = domaineId => {
   console.log('Type:', domaineId)
-  const sourceJson = require(`../sources/${domaineId}.json`)
+  const geoJsonSource = require(`../sources/${domaineId}.json`)
   const jsonFormat = require(`./${domaineId}/json-format`)
-  const tmpJson = sourceJson.features.map(geojsonFeature =>
+  const jsonTmp = geoJsonSource.features.map(geojsonFeature =>
     jsonFormat(geojsonFeature)
   )
-  objectCreate(tmpJson, domaineId, 'titres')
-  arrayCreate(tmpJson, domaineId, 'titresSubstances')
-  objectCreate(tmpJson, domaineId, 'titresDemarches')
-  objectCreate(tmpJson, domaineId, 'titresDemarchesEtapes')
-  arrayCreate(tmpJson, domaineId, 'titresPoints')
-  arrayCreate(tmpJson, domaineId, 'entreprises')
-  arrayCreate(tmpJson, domaineId, 'titresTitulaires')
-  objectCreate(tmpJson, domaineId, 'titresEmprises')
+
+  objectsKeys.forEach(key => {
+    filesCreate(objectsDedup(arrayMap(jsonTmp, key)), domaineId, key)
+  })
+
+  arraysKeys.forEach(key => {
+    filesCreate(arrayFlat(arrayMap(jsonTmp, key)), domaineId, key)
+  })
 }
 
 module.exports = build

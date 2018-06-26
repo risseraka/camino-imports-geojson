@@ -4,15 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "front-s": "node ./_front/s/index.js",
-    "front-s-w": "onchange '**/*.js' -i -- npm run front-s",
-    "front-h": "node ./_front/h/index.js",
-    "front-h-w": "onchange '**/*.js' -i -- npm run front-h",
-    "front-m": "node ./_front/m/index.js",
-    "front-m-w": "onchange '**/*.js' -i -- npm run front-m",
-    "front-g": "node ./_front/g/index.js",
-    "front-g-w": "onchange '**/*.js' -i -- npm run front-g",
-    "front": "npm run front-s && npm run front-h && npm run front-m && npm run front-g",
     "back-s": "node ./_back/s/index.js",
     "back-s-w": "onchange '**/*.js' -i -- npm run back-s",
     "back-h": "node ./_back/h/index.js",
@@ -36,6 +27,7 @@
     "camelize": "^1.0.0",
     "chalk": "^2.4.1",
     "decamelize": "^2.0.0",
+    "json2csv": "^4.1.4",
     "left-pad": "^1.3.0",
     "lodash": "^4.17.10",
     "splice-string": "^2.0.0"
