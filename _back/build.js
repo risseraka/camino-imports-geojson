@@ -10,7 +10,11 @@ const objDecamelize = require('../_utils/object-decamelize.js')
 const filesCreate = (json, domaine, key) => {
   const jsonFileContent = JSON.stringify(objDecamelize(json), null, 2)
   const jsonFileName = `exports/json/${domaine}-${decamelize(key)}.json`
+  const csvFileName = `exports/csv/${domaine}-${decamelize(key)}.csv`
+  const json2csvParser = new Json2csvParser()
+  const csvFileContent = json2csvParser.parse(objDecamelize(json))
   fileCreate(jsonFileName, jsonFileContent)
+  fileCreate(csvFileName, csvFileContent)
 }
 
 const objectsDedup = json =>
