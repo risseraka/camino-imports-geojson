@@ -1,7 +1,6 @@
 const _ = require('lodash')
 const chalk = require('chalk')
 const slugify = require('@sindresorhus/slugify')
-const leftPad = require('left-pad')
 const spliceString = require('splice-string')
 const { pointsCreate } = require('../../_utils')
 
@@ -132,7 +131,7 @@ const jsonFormat = geojsonFeature => {
       points: true,
       substances: true,
       titulaires: true,
-      etape_statut_id: 'ter'
+      etapeStatutId: 'ter'
     },
     titresEmprises: {
       titreDemarcheEtapeId,
