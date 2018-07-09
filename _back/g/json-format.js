@@ -1,7 +1,6 @@
 const _ = require('lodash')
 const chalk = require('chalk')
 const slugify = require('@sindresorhus/slugify')
-const leftPad = require('left-pad')
 const spliceString = require('splice-string')
 const { pointsCreate } = require('../../_utils')
 const errMsg = '--------------------------------> ERROR'
@@ -25,17 +24,17 @@ const jsonFormat = geojsonFeature => {
 
   const titreNom = _.startCase(_.toLower(geojsonFeature.properties.NOM))
 
-  let phaseDate =
+  let demarcheEtapeDate =
     _.replace(geojsonFeature.properties.DATE_JO_RF, /\//g, '-') || '2000-01-01'
 
-  if (phaseDate === '') {
+  if (demarcheEtapeDate === '') {
     console.log(chalk.red.bold(`Erreur: date manquante ${titreNom}`))
   }
-  const dateId = phaseDate.slice(0, 4)
+  const dateId = demarcheEtapeDate.slice(0, 4)
 
   const titreId = slugify(`${domaineId}-${typeId}-${titreNom}-${dateId}`)
 
-  const phaseId = (() => {
+  const demarcheId = (() => {
     if (t === 'Demande de permis de recherches') {
       return 'prx-oct'
     } else if (t === 'Permis de recherches 1ere periode') {
@@ -49,9 +48,13 @@ const jsonFormat = geojsonFeature => {
     }
   })()
 
-  const titrePhaseId = slugify(`${domaineId}-${phaseId}-${titreNom}-${dateId}`)
+  const titreDemarcheId = slugify(
+    `${domaineId}-${demarcheId}-${titreNom}-${dateId}`
+  )
 
-  const phasePosition = (() => {
+  const titreDemarcheEtapeId = `${titreDemarcheId}-dpu`
+
+  const demarcheOrdre = (() => {
     if (t === 'Demande de permis de recherches') {
       return 0
     } else if (t === 'Permis de recherches 1ere periode') {
@@ -65,13 +68,13 @@ const jsonFormat = geojsonFeature => {
     }
   })()
 
-  const phaseDuree =
+  const duree =
     (geojsonFeature.properties.DATE2
       ? Number(spliceString(geojsonFeature.properties.DATE2, 4, 6))
       : Number(spliceString(geojsonFeature.properties.DATE1, 4, 6))) -
-    Number(spliceString(phaseDate, 4, 6))
+    Number(spliceString(demarcheEtapeDate, 4, 6))
 
-  const titulaires = ['1', '2', '3']
+  const entreprises = ['1', '2', '3']
     .filter(id => geojsonFeature.properties[`TIT_PET${id}`])
     .map(i => ({
       id: slugify(geojsonFeature.properties[`TIT_PET${i}`].slice(0, 32)),
@@ -85,40 +88,47 @@ const jsonFormat = geojsonFeature => {
       typeId,
       domaineId,
       statutId: 'val',
-      police: true,
       references: {
         métier: geojsonFeature.properties.NUMERO
       }
     },
-    'titres-substances-principales': [
+    titresSubstances: [
       {
-        titreId,
+        titreDemarcheEtapeId,
         substanceId: 'geoh'
       }
     ],
-    'titres-substances-connexes': [],
-    'titres-phases': {
-      id: titrePhaseId,
-      phaseId,
+    titresDemarches: {
+      id: titreDemarcheId,
+      demarcheId,
       titreId,
-      date: phaseDate,
-      duree: phaseDuree,
-      surface: geojsonFeature.properties.SUPERFICIE,
-      position: phasePosition
+      ordre: demarcheOrdre
     },
-    'titres-phases-emprises': {
-      titrePhaseId,
+    titresDemarchesEtapes: {
+      id: titreDemarcheEtapeId,
+      titreDemarcheId,
+      etapeId: 'dpu',
+      etapeStatutId: 'ter',
+      date: demarcheEtapeDate,
+      duree,
+      surface: geojsonFeature.properties.SUPERFICIE
+    },
+    titresEmprises: {
+      titreDemarcheEtapeId,
       empriseId: 'ter'
     },
-    'titres-geo-points': geojsonFeature.geometry.coordinates.reduce(
+    titresPoints: geojsonFeature.geometry.coordinates.reduce(
       (res, contour, i) => [
         ...res,
-        ...pointsCreate(titrePhaseId, contour, 0, i)
+        ...pointsCreate(titreDemarcheEtapeId, contour, 0, i)
       ],
       []
     ),
-    titulaires,
-    'titres-titulaires': titulaires.map(t => ({ titulaireId: t.id, titreId }))
+    entreprises,
+    titresTitulaires: entreprises.map(t => ({
+      titulaireId: t.id,
+      titreDemarcheEtapeId
+    }))
   }
 }
 

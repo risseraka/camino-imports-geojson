@@ -20,17 +20,17 @@ const jsonFormat = geojsonFeature => {
 
   const titreNom = _.startCase(_.toLower(geojsonFeature.properties.nom))
 
-  const phaseDate = geojsonFeature.properties.date || '2000-01-01'
+  const demarcheEtapeDate = geojsonFeature.properties.date || '2000-01-01'
 
-  if (phaseDate === '') {
+  if (demarcheEtapeDate === '') {
     console.log(chalk.red.bold(`Erreur: date manquante ${titreNom}`))
   }
 
-  const dateId = phaseDate.slice(0, 4)
+  const dateId = demarcheEtapeDate.slice(0, 4)
 
   const titreId = slugify(`${domaineId}-${typeId}-${titreNom}-${dateId}`)
 
-  const phaseId = (() => {
+  const demarcheId = (() => {
     if (t === 'concession') {
       return 'cxx-oct'
     } else if (t === 'permis exclusif de recherches') {
@@ -40,15 +40,19 @@ const jsonFormat = geojsonFeature => {
     }
   })()
 
-  const titrePhaseId = slugify(`${domaineId}-${phaseId}-${titreNom}-${dateId}`)
+  const titreDemarcheId = slugify(
+    `${domaineId}-${demarcheId}-${titreNom}-${dateId}`
+  )
 
-  const phasePosition = 1
+  const titreDemarcheEtapeId = `${titreDemarcheId}-dpu`
 
-  const phaseDuree =
+  const demarcheOrdre = 1
+
+  const duree =
     geojsonFeature.properties['DUREE_A,C,10'] ||
     geojsonFeature.properties['DUREE_D,C,10']
 
-  const titulaires = geojsonFeature.properties['titulaires']
+  const entreprises = geojsonFeature.properties['titulaires']
     .split(' ; ')
     .map(t => ({
       id: slugify(t.slice(0, 32)),
@@ -60,7 +64,7 @@ const jsonFormat = geojsonFeature => {
       (res, cur) => [
         ...res,
         {
-          titreId,
+          titreDemarcheEtapeId,
           substanceId: cur
         }
       ],
@@ -74,28 +78,32 @@ const jsonFormat = geojsonFeature => {
       typeId,
       domaineId,
       statutId: geojsonFeature.properties.statut,
-      police: true,
       references: {
         deb: geojsonFeature.properties['references:deb'],
         ifremer: geojsonFeature.properties['references:ifremer']
       }
     },
-    'titres-substances-principales': substancePrincipales,
-    'titres-substances-connexes': [],
-    'titres-phases': {
-      id: titrePhaseId,
-      phaseId,
+    titresSubstances: substancePrincipales,
+    titresDemarches: {
+      id: titreDemarcheId,
+      demarcheId,
       titreId,
-      date: phaseDate,
-      duree: phaseDuree,
-      surface: geojsonFeature.properties['SURFACE,C,15'],
-      position: phasePosition
+      position: demarcheOrdre
     },
-    'titres-phases-emprises': {
-      titrePhaseId,
+    titresDemarchesEtapes: {
+      id: titreDemarcheEtapeId,
+      titreDemarcheId,
+      etapeId: 'dpu',
+      etapeStatutId: 'ter',
+      date: demarcheEtapeDate,
+      duree,
+      surface: geojsonFeature.properties['SURFACE,C,15']
+    },
+    titresEmprises: {
+      titreDemarcheId,
       empriseId: 'mer'
     },
-    'titres-geo-points': geojsonFeature.geometry.coordinates.reduce(
+    titresPoints: geojsonFeature.geometry.coordinates.reduce(
       (res, contour, i) =>
         geojsonFeature.geometry.type === 'MultiPolygon'
           ? [
@@ -103,16 +111,16 @@ const jsonFormat = geojsonFeature => {
               ...contour.reduce(
                 (ps, cont, n) => [
                   ...ps,
-                  ...pointsCreate(titrePhaseId, cont, n, i)
+                  ...pointsCreate(titreDemarcheEtapeId, cont, n, i)
                 ],
                 []
               )
             ]
-          : [...res, ...pointsCreate(titrePhaseId, contour, 0, i)],
+          : [...res, ...pointsCreate(titreDemarcheEtapeId, contour, 0, i)],
       []
     ),
-    titulaires,
-    'titres-titulaires': titulaires.map(t => ({ titulaireId: t.id, titreId }))
+    entreprises,
+    titresTitulaires: entreprises.map(t => ({ titulaireId: t.id, titreId }))
   }
 }
 

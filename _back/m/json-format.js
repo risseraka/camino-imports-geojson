@@ -122,6 +122,7 @@ const jsonFormat = geojsonFeature => {
       id: titreDemarcheEtapeId,
       titreDemarcheId: titreDemarcheId,
       etapeId: 'dpu',
+      etapeStatutId: 'ter',
       ordre: 1,
       date: demarcheEtapeDate,
       duree:
@@ -130,8 +131,7 @@ const jsonFormat = geojsonFeature => {
       surface: geojsonFeature.properties.AREA,
       points: true,
       substances: true,
-      titulaires: true,
-      etapeStatutId: 'ter'
+      titulaires: true
     },
     titresEmprises: {
       titreDemarcheEtapeId,
