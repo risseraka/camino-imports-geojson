@@ -30,7 +30,7 @@ const jsonFormat = geojsonFeature => {
   const titreNom = _.startCase(_.toLower(geojsonFeature.properties.NOM))
 
   const demarcheEtapeDate =
-    _.replace(geojsonFeature.properties.DATE1, /\//g, '-') || '2000-01-01'
+    _.replace(geojsonFeature.properties.DATE_JO_RF, /\//g, '-') || ''
 
   if (demarcheEtapeDate === '') {
     console.log(chalk.red.bold(`Erreur: date manquante ${titreNom}`))
@@ -60,7 +60,9 @@ const jsonFormat = geojsonFeature => {
     }
   })()
 
-  const titreDemarcheId = slugify(`${domaineId}-${demarcheId}-${titreNom}-${dateId}`)
+  const titreDemarcheId = slugify(
+    `${domaineId}-${demarcheId}-${titreNom}-${dateId}`
+  )
 
   const titreDemarcheEtapeId = `${titreDemarcheId}-dpu`
 
@@ -152,7 +154,10 @@ const jsonFormat = geojsonFeature => {
       []
     ),
     entreprises,
-    titresTitulaires: entreprises.map(t => ({ entrepriseId: t.id, titreDemarcheEtapeId }))
+    titresTitulaires: entreprises.map(t => ({
+      entrepriseId: t.id,
+      titreDemarcheEtapeId
+    }))
   }
 }
 

@@ -100,7 +100,7 @@ const jsonFormat = geojsonFeature => {
       surface: geojsonFeature.properties['SURFACE,C,15']
     },
     titresEmprises: {
-      titreDemarcheId,
+      titreDemarcheEtapeId,
       empriseId: 'mer'
     },
     titresPoints: geojsonFeature.geometry.coordinates.reduce(
