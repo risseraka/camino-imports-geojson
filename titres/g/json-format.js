@@ -118,9 +118,9 @@ const jsonFormat = geojsonFeature => {
       empriseId: 'ter'
     },
     titresPoints: geojsonFeature.geometry.coordinates.reduce(
-      (res, contour, i) => [
+      (res, points, contourId) => [
         ...res,
-        ...pointsCreate(titreDemarcheEtapeId, contour, 0, i)
+        ...pointsCreate(titreDemarcheEtapeId, points, contourId, 0)
       ],
       []
     ),

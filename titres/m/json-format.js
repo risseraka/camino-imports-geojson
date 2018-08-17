@@ -23,8 +23,7 @@ const jsonFormat = geojsonFeature => {
   const titreNom = _.startCase(_.toLower(geojsonFeature.properties.NOM_TITRE))
 
   const demarcheEtapeDate =
-    _
-      .replace(geojsonFeature.properties.DATE_DEB, /\//g, '-')
+    _.replace(geojsonFeature.properties.DATE_DEB, /\//g, '-')
       .split('-')
       .reverse()
       .join('-') || '2000-01-01'
@@ -65,8 +64,7 @@ const jsonFormat = geojsonFeature => {
   ]
 
   const substancePrincipales = (() =>
-    _
-      .replace(geojsonFeature.properties['SUBST_PRIN'], /,/g, '')
+    _.replace(geojsonFeature.properties['SUBST_PRIN'], /,/g, '')
       .split(' ')
       .reduce((res, cur, i) => {
         const sub = substances.find(
@@ -138,9 +136,9 @@ const jsonFormat = geojsonFeature => {
       empriseId: 'ter'
     },
     titresPoints: geojsonFeature.geometry.coordinates.reduce(
-      (res, contour, i) => [
+      (res, points, contourId) => [
         ...res,
-        ...pointsCreate(titreDemarcheEtapeId, contour, 0, i)
+        ...pointsCreate(titreDemarcheEtapeId, points, contourId, 0)
       ],
       []
     ),

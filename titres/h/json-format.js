@@ -44,9 +44,9 @@ const jsonFormat = geojsonFeature => {
     if (t === 'Demande de permis de recherches') {
       return 'prh-oct'
     } else if (t === 'Permis de recherches 1ere période') {
-      return 'prh-pr1'
+      return 'prh-oct'
     } else if (t === 'Permis de recherches 2e période') {
-      return 'prh-pr2'
+      return 'prh-pr1'
     } else if (t === 'Permis de recherches 3e période') {
       return 'prh-pre'
     } else if (
@@ -100,8 +100,9 @@ const jsonFormat = geojsonFeature => {
       nom: titreNom,
       typeId,
       domaineId,
+      statutId: 'val',
       references: {
-        métier: geojsonFeature.properties.NUMERO
+        DGEC: geojsonFeature.properties.NUMERO
       }
     },
     titresSubstances: [
@@ -114,6 +115,7 @@ const jsonFormat = geojsonFeature => {
       id: titreDemarcheId,
       demarcheId,
       titreId,
+      statuId: 'acc',
       ordre: demarchePosition
     },
     titresDemarchesEtapes: {
@@ -138,19 +140,32 @@ const jsonFormat = geojsonFeature => {
       empriseId: 'ter'
     },
     titresPoints: geojsonFeature.geometry.coordinates.reduce(
-      (res, contour, i) =>
+      (res, contoursOrPoints, contourIdOrGroupId) =>
         geojsonFeature.geometry.type === 'MultiPolygon'
           ? [
               ...res,
-              ...contour.reduce(
-                (ps, cont, n) => [
+              ...contoursOrPoints.reduce(
+                (ps, points, contourId) => [
                   ...ps,
-                  ...pointsCreate(titreDemarcheEtapeId, cont, n, i)
+                  ...pointsCreate(
+                    titreDemarcheEtapeId,
+                    points,
+                    contourId,
+                    contourIdOrGroupId
+                  )
                 ],
                 []
               )
             ]
-          : [...res, ...pointsCreate(titreDemarcheEtapeId, contour, 0, i)],
+          : [
+              ...res,
+              ...pointsCreate(
+                titreDemarcheEtapeId,
+                contoursOrPoints,
+                contourIdOrGroupId,
+                0
+              )
+            ],
       []
     ),
     entreprises,

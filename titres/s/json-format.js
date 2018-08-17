@@ -114,19 +114,33 @@ const jsonFormat = geojsonFeature => {
       empriseId: 'ter'
     },
     titresPoints: geojsonFeature.geometry.coordinates.reduce(
-      (res, contour, i) =>
+      (res, contoursOrPoints, contourIdOrGroupId) =>
         geojsonFeature.geometry.type === 'MultiPolygon'
           ? [
               ...res,
-              ...contour.reduce(
-                (ps, cont, n) => [
+              ...contoursOrPoints.reduce(
+                (ps, points, contourId) => [
                   ...ps,
-                  ...pointsCreate(titreDemarcheEtapeId, cont, n, i)
+                  ...pointsCreate(
+                    titreDemarcheEtapeId,
+                    points,
+                    contourId,
+                    // groupId
+                    contourIdOrGroupId
+                  )
                 ],
                 []
               )
             ]
-          : [...res, ...pointsCreate(titreDemarcheEtapeId, contour, 0, i)],
+          : [
+              ...res,
+              ...pointsCreate(
+                titreDemarcheEtapeId,
+                contoursOrPoints,
+                contourIdOrGroupId,
+                0
+              )
+            ],
       []
     ),
     entreprises,
