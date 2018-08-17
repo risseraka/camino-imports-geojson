@@ -52,15 +52,15 @@ const jsonFormat = geojsonFeature => {
     `${domaineId}-${demarcheId}-${titreNom}-${dateId}`
   )
 
-  const titreDemarcheEtapeId = `${titreDemarcheId}-dpu`
+  const titreEtapeId = `${titreDemarcheId}-dpu`
 
   const demarcheOrdre = (() => {
     if (t === 'Demande de permis de recherches') {
-      return 0
-    } else if (t === 'Permis de recherches 1ere periode') {
       return 1
-    } else if (t === 'Permis de recherches 2e periode') {
+    } else if (t === 'Permis de recherches 1ere periode') {
       return 2
+    } else if (t === 'Permis de recherches 2e periode') {
+      return 3
     } else if (t === "Titres d'exploitation - concession") {
       return 1
     } else {
@@ -94,7 +94,7 @@ const jsonFormat = geojsonFeature => {
     },
     titresSubstances: [
       {
-        titreDemarcheEtapeId,
+        titreEtapeId,
         substanceId: 'geoh'
       }
     ],
@@ -102,32 +102,35 @@ const jsonFormat = geojsonFeature => {
       id: titreDemarcheId,
       demarcheId,
       titreId,
+      demarcheStatutId: 'ind',
       ordre: demarcheOrdre
     },
-    titresDemarchesEtapes: {
-      id: titreDemarcheEtapeId,
+    titresEtapes: {
+      id: titreEtapeId,
       titreDemarcheId,
       etapeId: 'dpu',
-      etapeStatutId: 'ter',
+      etapeStatutId: 'acc',
+      ordre: 1,
       date: demarcheEtapeDate,
       duree,
+      echeance: '',
       surface: geojsonFeature.properties.SUPERFICIE
     },
     titresEmprises: {
-      titreDemarcheEtapeId,
+      titreEtapeId,
       empriseId: 'ter'
     },
     titresPoints: geojsonFeature.geometry.coordinates.reduce(
       (res, points, contourId) => [
         ...res,
-        ...pointsCreate(titreDemarcheEtapeId, points, contourId, 0)
+        ...pointsCreate(titreEtapeId, points, contourId, 0)
       ],
       []
     ),
     entreprises,
     titresTitulaires: entreprises.map(t => ({
       titulaireId: t.id,
-      titreDemarcheEtapeId
+      titreEtapeId
     }))
   }
 }

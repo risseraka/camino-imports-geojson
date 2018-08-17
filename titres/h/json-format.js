@@ -64,7 +64,7 @@ const jsonFormat = geojsonFeature => {
     `${domaineId}-${demarcheId}-${titreNom}-${dateId}`
   )
 
-  const titreDemarcheEtapeId = `${titreDemarcheId}-dpu`
+  const titreEtapeId = `${titreDemarcheId}-dpu`
 
   const demarchePosition = (() => {
     if (
@@ -107,7 +107,7 @@ const jsonFormat = geojsonFeature => {
     },
     titresSubstances: [
       {
-        titreDemarcheEtapeId,
+        titreEtapeId,
         substanceId: 'hydr'
       }
     ],
@@ -118,8 +118,8 @@ const jsonFormat = geojsonFeature => {
       statuId: 'acc',
       ordre: demarchePosition
     },
-    titresDemarchesEtapes: {
-      id: titreDemarcheEtapeId,
+    titresEtapes: {
+      id: titreEtapeId,
       titreDemarcheId: titreDemarcheId,
       etapeId: 'dpu',
       etapeStatutId: 'ter',
@@ -136,7 +136,7 @@ const jsonFormat = geojsonFeature => {
       titulaires: true
     },
     titresEmprises: {
-      titreDemarcheEtapeId,
+      titreEtapeId,
       empriseId: 'ter'
     },
     titresPoints: geojsonFeature.geometry.coordinates.reduce(
@@ -148,7 +148,7 @@ const jsonFormat = geojsonFeature => {
                 (ps, points, contourId) => [
                   ...ps,
                   ...pointsCreate(
-                    titreDemarcheEtapeId,
+                    titreEtapeId,
                     points,
                     contourId,
                     contourIdOrGroupId
@@ -160,7 +160,7 @@ const jsonFormat = geojsonFeature => {
           : [
               ...res,
               ...pointsCreate(
-                titreDemarcheEtapeId,
+                titreEtapeId,
                 contoursOrPoints,
                 contourIdOrGroupId,
                 0
@@ -171,7 +171,7 @@ const jsonFormat = geojsonFeature => {
     entreprises,
     titresTitulaires: entreprises.map(t => ({
       entrepriseId: t.id,
-      titreDemarcheEtapeId
+      titreEtapeId
     }))
   }
 }

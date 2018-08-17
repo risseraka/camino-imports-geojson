@@ -18,7 +18,8 @@
     "titres-c-w": "onchange '**/*.js' -i -- npm run titres-c",
     "titres-m973": "node ./titres/m973/index.js",
     "titres-m973-w": "onchange '**/*.js' -i -- npm run titres-m973",
-    "titres": "npm run titres-h && npm run titres-m && npm run titres-g && npm run titres-s && npm run titres-c && npm run titres-m973"
+    "titres": "npm run titres-h && npm run titres-m && npm run titres-g && npm run titres-s && npm run titres-c && npm run titres-m973",
+    "titres-w": "onchange '**/*.js' -i -- npm run titres"
   },
   "author": "",
   "license": "ISC",

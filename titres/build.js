@@ -30,7 +30,7 @@ const arraysKeys = [
 const objectsKeys = [
   'titres',
   'titresDemarches',
-  'titresDemarchesEtapes',
+  'titresEtapes',
   'titresEmprises'
 ]
 

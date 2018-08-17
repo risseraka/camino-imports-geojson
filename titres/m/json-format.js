@@ -50,7 +50,7 @@ const jsonFormat = geojsonFeature => {
     `${domaineId}-${demarcheId}-${titreNom}-${dateId}`
   )
 
-  const titreDemarcheEtapeId = `${titreDemarcheId}-dpu`
+  const titreEtapeId = `${titreDemarcheId}-dpu`
 
   const demarchePosition = (() => {
     return 1
@@ -79,7 +79,7 @@ const jsonFormat = geojsonFeature => {
           ? [
               ...res,
               {
-                titreDemarcheEtapeId,
+                titreEtapeId,
                 substanceId: sub.id,
                 ordre: i + 1
               }
@@ -93,6 +93,7 @@ const jsonFormat = geojsonFeature => {
       nom: titreNom,
       typeId,
       domaineId,
+      statutId: 'ind',
       references: geojsonFeature.properties.CODE
         ? {
             métier: geojsonFeature.properties.CODE
@@ -103,7 +104,7 @@ const jsonFormat = geojsonFeature => {
       ? [
           ...substancePrincipales,
           {
-            titreDemarcheEtapeId,
+            titreEtapeId,
             substanceId: 'oooo',
             connexe: true,
             ordre: 1
@@ -114,38 +115,40 @@ const jsonFormat = geojsonFeature => {
       id: titreDemarcheId,
       demarcheId,
       titreId,
+      demarcheStatutId: 'ind',
       ordre: demarchePosition
     },
-    titresDemarchesEtapes: {
-      id: titreDemarcheEtapeId,
+    titresEtapes: {
+      id: titreEtapeId,
       titreDemarcheId: titreDemarcheId,
       etapeId: 'dpu',
-      etapeStatutId: 'ter',
+      etapeStatutId: 'acc',
       ordre: 1,
       date: demarcheEtapeDate,
       duree:
         Number(spliceString(geojsonFeature.properties.DATE_FIN, 1, 6)) -
           Number(spliceString(geojsonFeature.properties.DATE_DEB, 1, 6)) || 0,
+      echeance: '',
       surface: geojsonFeature.properties.AREA,
       points: true,
       substances: true,
       titulaires: true
     },
     titresEmprises: {
-      titreDemarcheEtapeId,
+      titreEtapeId,
       empriseId: 'ter'
     },
     titresPoints: geojsonFeature.geometry.coordinates.reduce(
       (res, points, contourId) => [
         ...res,
-        ...pointsCreate(titreDemarcheEtapeId, points, contourId, 0)
+        ...pointsCreate(titreEtapeId, points, contourId, 0)
       ],
       []
     ),
     entreprises,
     titresTitulaires: entreprises.map(t => ({
       entrepriseId: t.id,
-      titreDemarcheEtapeId
+      titreEtapeId
     }))
   }
 }
