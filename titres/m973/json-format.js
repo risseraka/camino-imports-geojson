@@ -50,11 +50,9 @@ const jsonFormat = geojsonFeature => {
 
   const titreId = slugify(`${domaineId}-${typeId}-${titreNom}-${dateId}`)
 
-  const demarcheId = `${typeId}-oct`
+  const demarcheId = `oct`
 
-  const titreDemarcheId = slugify(
-    `${domaineId}-${demarcheId}-${titreNom}-${dateId}`
-  )
+  const titreDemarcheId = `${titreId}-${demarcheId}`
 
   const titreEtapeId = `${titreDemarcheId}-dpu`
 

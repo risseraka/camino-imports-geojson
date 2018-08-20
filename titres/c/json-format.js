@@ -30,19 +30,9 @@ const jsonFormat = geojsonFeature => {
 
   const titreId = slugify(`${domaineId}-${typeId}-${titreNom}-${dateId}`)
 
-  const demarcheId = (() => {
-    if (t === 'concession') {
-      return 'cxx-oct'
-    } else if (t === 'permis exclusif de recherches') {
-      return 'prx-oct'
-    } else {
-      return errMsg
-    }
-  })()
+  const demarcheId = 'oct'
 
-  const titreDemarcheId = slugify(
-    `${domaineId}-${demarcheId}-${titreNom}-${dateId}`
-  )
+  const titreDemarcheId = slugify(`${titreId}-${demarcheId}`)
 
   const titreEtapeId = `${titreDemarcheId}-dpu`
 
@@ -99,6 +89,7 @@ const jsonFormat = geojsonFeature => {
       ordre: 1,
       date: demarcheEtapeDate,
       duree,
+      echeance: '',
       surface: geojsonFeature.properties['SURFACE,C,15']
     },
     titresEmprises: {

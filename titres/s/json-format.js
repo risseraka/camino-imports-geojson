@@ -30,17 +30,9 @@ const jsonFormat = geojsonFeature => {
 
   const titreId = slugify(`${domaineId}-${typeId}-${titreNom}-${dateId}`)
 
-  const demarcheId = (() => {
-    if (t === 'concession') {
-      return 'cxx-oct'
-    } else {
-      return errMsg
-    }
-  })()
+  const demarcheId = 'oct'
 
-  const titreDemarcheId = slugify(
-    `${domaineId}-${demarcheId}-${titreNom}-${dateId}`
-  )
+  const titreDemarcheId = slugify(`${titreId}-${demarcheId}`)
 
   const titreEtapeId = `${titreDemarcheId}-dpu`
 

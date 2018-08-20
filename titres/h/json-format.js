@@ -41,28 +41,24 @@ const jsonFormat = geojsonFeature => {
   const titreId = slugify(`${domaineId}-${typeId}-${titreNom}-${dateId}`)
 
   const demarcheId = (() => {
-    if (t === 'Demande de permis de recherches') {
-      return 'prh-oct'
-    } else if (t === 'Permis de recherches 1ere période') {
-      return 'prh-oct'
-    } else if (t === 'Permis de recherches 2e période') {
-      return 'prh-pr1'
-    } else if (t === 'Permis de recherches 3e période') {
-      return 'prh-pre'
-    } else if (
+    if (
+      t === 'Demande de permis de recherches' ||
+      t === 'Permis de recherches 1ere période' ||
       t === 'Demande de concession' ||
       t === "Titre d'exploitation - concession" ||
       t === 'Concession'
     ) {
-      return 'cxx-oct'
+      return 'oct'
+    } else if (t === 'Permis de recherches 2e période') {
+      return 'pr1'
+    } else if (t === 'Permis de recherches 3e période') {
+      return 'pre'
     } else {
       return errMsg
     }
   })()
 
-  const titreDemarcheId = slugify(
-    `${domaineId}-${demarcheId}-${titreNom}-${dateId}`
-  )
+  const titreDemarcheId = slugify(`${titreId}-${demarcheId}`)
 
   const titreEtapeId = `${titreDemarcheId}-dpu`
 
