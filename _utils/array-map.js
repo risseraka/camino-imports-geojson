@@ -1,1 +1,2 @@
-module.exports = (json, key) => json.map(n => n[key])
+module.exports = (json, key) =>
+  json.reduce((r, n) => (n[key] ? [...r, n[key]] : r), [])

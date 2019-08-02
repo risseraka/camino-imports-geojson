@@ -16,12 +16,14 @@ const pointsCreate = (titreEtapeId, contour, contourId, groupeId) =>
                   0
                 )}-p${leftPad(pointId + 1, 3, 0)}`
               ),
+              titreEtapeId,
               coordonnees: set.join(),
               groupe: groupeId + 1,
               contour: contourId + 1,
               point: pointId + 1,
-              titreEtapeId,
-              nom: String(pointId + 1)
+              nom: String(pointId + 1),
+              description: '',
+              securite: ''
             }
           ],
     []
